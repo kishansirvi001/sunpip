@@ -18,16 +18,38 @@ const initial = {
 export function QuoteForm() {
   const [form, setForm] = useState(initial);
   const [status, setStatus] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const bill = Number(form.monthlyBill);
     if (!form.name || !form.email.includes("@") || form.phone.length < 8 || !form.city || !bill || bill < 500) {
       setStatus("Please add valid contact details, city, and monthly bill.");
       return;
     }
-    setStatus("Quote request validated and ready for backend integration.");
-    setForm(initial);
+    setIsSubmitting(true);
+    setStatus("Sending quote request...");
+
+    try {
+      const response = await fetch("/api/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const result = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        setStatus(result.message ?? "Could not send quote request. Please try again.");
+        return;
+      }
+
+      setStatus("Quote request sent. Our team will contact you soon.");
+      setForm(initial);
+    } catch {
+      setStatus("Could not send quote request. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -43,7 +65,7 @@ export function QuoteForm() {
       </div>
       <label className="field-label">Roof type<select value={form.roofType} onChange={(e) => setForm({ ...form, roofType: e.target.value })} className="field-input">{roofTypes.map((roof) => <option key={roof}>{roof}</option>)}</select></label>
       <label className="field-label">Project notes<textarea rows={4} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="field-input resize-none" /></label>
-      <button type="submit" className="rounded-full bg-sun-blue px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">Request quote</button>
+      <button type="submit" disabled={isSubmitting} className="rounded-full bg-sun-blue px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-400">{isSubmitting ? "Sending..." : "Request quote"}</button>
       {status ? <p role="status" className="text-sm text-sun-blue">{status}</p> : null}
     </form>
   );
