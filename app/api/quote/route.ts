@@ -43,8 +43,8 @@ function formatLeadMessage(lead: Required<Record<keyof QuoteLead, string>>) {
 }
 
 export async function POST(request: Request) {
-  const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
+  const botToken = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
 
   if (!botToken || !chatId) {
     return NextResponse.json(
@@ -82,20 +82,40 @@ export async function POST(request: Request) {
     );
   }
 
-  const telegramResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: formatLeadMessage(lead),
-      parse_mode: "HTML",
-      disable_web_page_preview: true,
-    }),
-  });
+  let telegramResponse: Response;
+
+  try {
+    telegramResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: formatLeadMessage(lead),
+        parse_mode: "HTML",
+        disable_web_page_preview: true,
+      }),
+    });
+  } catch (error) {
+    console.error("Telegram lead alert request failed", error);
+    return NextResponse.json(
+      { message: "Could not connect to Telegram. Please try again later." },
+      { status: 502 },
+    );
+  }
 
   if (!telegramResponse.ok) {
+    const telegramError = (await telegramResponse.json().catch(() => null)) as {
+      description?: string;
+    } | null;
+    const reason = telegramError?.description ?? `Telegram API returned ${telegramResponse.status}`;
+
+    console.error("Telegram lead alert failed", {
+      status: telegramResponse.status,
+      reason,
+    });
+
     return NextResponse.json(
-      { message: "Could not send Telegram lead alert." },
+      { message: `Could not send Telegram lead alert: ${reason}` },
       { status: 502 },
     );
   }
