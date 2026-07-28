@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 type QuoteLead = {
+  leadType?: unknown;
   name?: unknown;
   email?: unknown;
   phone?: unknown;
@@ -11,6 +12,8 @@ type QuoteLead = {
   monthlyBill?: unknown;
   message?: unknown;
 };
+
+type NormalizedLead = Required<Record<keyof QuoteLead, string>>;
 
 function text(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -23,7 +26,29 @@ function escapeHtml(value: string) {
     .replaceAll(">", "&gt;");
 }
 
-function formatLeadMessage(lead: Required<Record<keyof QuoteLead, string>>) {
+function formatContactLeadMessage(lead: NormalizedLead) {
+  const bill = lead.monthlyBill ? `Rs. ${lead.monthlyBill}` : "Not provided";
+  const notes = lead.message || "Not provided";
+
+  return [
+    "<b>New Contact / Site Visit Lead</b>",
+    "",
+    `<b>Name:</b> ${escapeHtml(lead.name)}`,
+    `<b>Phone:</b> ${escapeHtml(lead.phone)}`,
+    `<b>Email:</b> ${escapeHtml(lead.email)}`,
+    `<b>City:</b> ${escapeHtml(lead.city)}`,
+    `<b>Roof Type:</b> ${escapeHtml(lead.roofType)}`,
+    `<b>Electricity Bill:</b> ${escapeHtml(bill)}`,
+    "",
+    `<b>Message:</b> ${escapeHtml(notes)}`,
+  ].join("\n");
+}
+
+function formatLeadMessage(lead: NormalizedLead) {
+  if (lead.leadType === "contact") {
+    return formatContactLeadMessage(lead);
+  }
+
   const notes = lead.message || "Not provided";
 
   return [
@@ -62,6 +87,7 @@ export async function POST(request: Request) {
   }
 
   const lead = {
+    leadType: text(payload.leadType),
     name: text(payload.name),
     email: text(payload.email),
     phone: text(payload.phone),
@@ -73,13 +99,22 @@ export async function POST(request: Request) {
     message: text(payload.message),
   };
 
-  const bill = Number(lead.monthlyBill);
+  if (lead.leadType === "contact") {
+    if (!lead.name || !lead.email.includes("@") || lead.phone.length < 8 || !lead.city || lead.message.length < 10) {
+      return NextResponse.json(
+        { message: "Please complete all fields with valid details." },
+        { status: 400 },
+      );
+    }
+  } else {
+    const bill = Number(lead.monthlyBill);
 
-  if (!lead.name || !lead.email.includes("@") || lead.phone.length < 8 || !lead.city || !bill || bill < 500) {
-    return NextResponse.json(
-      { message: "Please add valid contact details, city, and monthly bill." },
-      { status: 400 },
-    );
+    if (!lead.name || !lead.email.includes("@") || lead.phone.length < 8 || !lead.city || !bill || bill < 500) {
+      return NextResponse.json(
+        { message: "Please add valid contact details, city, and monthly bill." },
+        { status: 400 },
+      );
+    }
   }
 
   let telegramResponse: Response;
@@ -120,5 +155,5 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ message: "Quote request sent." });
+  return NextResponse.json({ message: lead.leadType === "contact" ? "Contact request sent." : "Quote request sent." });
 }
