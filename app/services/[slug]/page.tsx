@@ -6,6 +6,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { createMetadata } from "@/lib/metadata";
 import { services } from "@/lib/constants";
+import { serviceImageBySlug } from "@/lib/visuals";
 
 type ServicePageProps = {
   params: Promise<{ slug: string }>;
@@ -30,7 +31,15 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
   return (
     <>
-      <PageHero eyebrow="Solar Service" title={service.title} description={service.description} ctaHref="/get-quote" ctaLabel="Request quote" />
+      <PageHero
+        eyebrow="Solar Service"
+        title={service.title}
+        description={service.description}
+        ctaHref="/get-quote"
+        ctaLabel="Request quote"
+        imageSrc={serviceImageBySlug[service.slug]}
+        imageAlt={`${service.title} service`}
+      />
       <section className="section bg-white dark:bg-slate-950">
         <div className="container grid gap-10 lg:grid-cols-2">
           <div>

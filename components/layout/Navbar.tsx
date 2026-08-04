@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown, Phone } from "lucide-react";
 
 import { navItems, siteConfig } from "@/lib/constants";
@@ -14,6 +14,10 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/95 shadow-[0_12px_36px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/92">
@@ -93,11 +97,11 @@ export function Navbar() {
             ))}
 
             <div className="mt-3 grid gap-3">
-              <ButtonLink href={siteConfig.phoneHref} variant="ghost">
+              <ButtonLink href={siteConfig.phoneHref} variant="ghost" onClick={() => setMobileOpen(false)}>
                 <Phone aria-hidden="true" className="h-4 w-4" />
                 Call Now
               </ButtonLink>
-              <ButtonLink href="/get-quote">
+              <ButtonLink href="/get-quote" onClick={() => setMobileOpen(false)}>
                 Get Free Quote
               </ButtonLink>
             </div>

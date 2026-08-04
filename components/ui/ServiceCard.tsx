@@ -1,27 +1,11 @@
 import type { Service } from "@/types/site";
 import Image from "next/image";
 import Link from "next/link";
-
-const serviceImages: Record<string, string> = {
-  "residential-rooftop-solar": "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85",
-  "commercial-solar-installation": "https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=900&q=85",
-  "industrial-solar-solutions": "https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=900&q=85",
-  "government-subsidy-assistance": "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85",
-  "complete-solar-epc": "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85",
-  "solar-system-design": "https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=900&q=85",
-  "operation-maintenance": "https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=900&q=85",
-  "ups-systems": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=900&q=85",
-  "inverter-solutions": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=900&q=85",
-  "battery-backup-systems": "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=900&q=85",
-  "annual-maintenance-contracts": "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85",
-  "solar-consultation": "https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=900&q=85",
-  "net-metering-assistance": "https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=900&q=85",
-  "site-survey": "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85",
-};
+import { serviceImageBySlug } from "@/lib/visuals";
 
 export function ServiceCard({ service }: { service: Service }) {
   const Icon = service.icon;
-  const image = serviceImages[service.slug] ?? serviceImages["complete-solar-epc"];
+  const image = serviceImageBySlug[service.slug] ?? serviceImageBySlug["complete-solar-epc"];
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-soft dark:border-white/10 dark:bg-white/[0.03]">

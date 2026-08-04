@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 
 type ButtonLinkProps = {
@@ -7,9 +7,10 @@ type ButtonLinkProps = {
   children: ReactNode;
   variant?: "primary" | "secondary" | "ghost";
   className?: string;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 };
 
-export function ButtonLink({ href, children, variant = "primary", className = "" }: ButtonLinkProps) {
+export function ButtonLink({ href, children, variant = "primary", className = "", onClick }: ButtonLinkProps) {
   const styles = {
     primary: "bg-sun-blue text-white shadow-sm hover:bg-blue-700",
     secondary: "bg-sun-blue text-white shadow-sm hover:bg-blue-700",
@@ -19,6 +20,7 @@ export function ButtonLink({ href, children, variant = "primary", className = ""
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-sun-blue focus:ring-offset-2 dark:focus:ring-offset-slate-950 ${styles[variant]} ${className}`}
     >
       {children}
