@@ -12,10 +12,10 @@ export const indianNumberFormatter = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 2,
 });
 
-const DEFAULT_TARIFF = 8;
-const COMMERCIAL_TARIFF = 10;
-const DAILY_GENERATION_PER_KW = 4.2;
-const SQFT_PER_KW = 90;
+const DEFAULT_TARIFF = solarAssumptions.defaultResidentialTariff;
+const COMMERCIAL_TARIFF = solarAssumptions.defaultCommercialTariff;
+const DAILY_GENERATION_PER_KW = solarAssumptions.dailyGenerationPerKw;
+const SQFT_PER_KW = solarAssumptions.sqftPerKw;
 
 export function safeNumber(value: number) {
   return Number.isFinite(value) ? value : 0;
@@ -50,14 +50,24 @@ export function calculateSolarSavings(input: {
   const recommendedKw = (monthlyUnits / 125) * systemMultiplier;
   const monthlySavings = Math.min(monthlyUnits * tariff * 0.9, monthlyBill || monthlyUnits * tariff);
   const annualSavings = monthlySavings * 12;
-  const costPerKw = input.systemType === "Off-Grid" ? 85000 : input.systemType === "Hybrid" ? 78000 : 65000;
+  const costPerKw = input.systemType === "Off-Grid"
+    ? solarAssumptions.offGridCostPerKw
+    : input.systemType === "Hybrid"
+      ? solarAssumptions.hybridCostPerKw
+      : solarAssumptions.onGridCostPerKw;
   const paybackYears = annualSavings > 0 ? (recommendedKw * costPerKw) / annualSavings : 0;
+  const systemCost = recommendedKw * costPerKw;
 
   return {
     recommendedKw,
     monthlySavings,
     annualSavings,
     paybackYears,
+    monthlyGeneration: recommendedKw * DAILY_GENERATION_PER_KW * 30,
+    annualGeneration: recommendedKw * DAILY_GENERATION_PER_KW * 365,
+    systemCost,
+    estimatedCustomerContribution: systemCost,
+    subsidyNote: solarAssumptions.residentialSubsidyNote,
   };
 }
 
@@ -185,3 +195,4 @@ export function downloadTextAsPdf(title: string, lines: string[]) {
   link.click();
   URL.revokeObjectURL(url);
 }
+import { solarAssumptions } from "@/lib/constants";

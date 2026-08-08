@@ -26,25 +26,29 @@ export const siteConfig = {
   founded: "2025",
   businessType: "Limited Liability Partnership (LLP)",
   industry: "Solar EPC",
-  primaryBusiness: "Residential Rooftop Solar EPC",
-  operatingArea: "Entire Rajasthan",
+  primaryBusiness: "Rooftop Solar EPC and Installation",
+  operatingArea: "Sojat, Pali and surrounding areas in Rajasthan",
   phone: "8999088903",
   phoneHref: "tel:+918999088903",
   whatsapp: "917023945096",
   whatsappDisplay: "7023945096",
   email: "sunpipsolutions@gmail.com",
   instagram: "@sunpipsolutionsllp",
-  address: "Rajasthan, India",
+  address: "Sojat, Pali, Rajasthan, India",
+  googleBusinessProfileUrl: "",
+  whatsappMessage:
+    "Hi Sunpip Solutions, I want to know about rooftop solar installation. Please help me with a quotation.",
   description:
-    "SUNPIP SOLUTIONS LLP is a Rajasthan-focused Solar EPC company providing complete rooftop solar consultation, design, subsidy assistance, installation, commissioning, and maintenance.",
+    "SUNPIP SOLUTIONS LLP is a solar EPC and rooftop solar installation company in Sojat, Pali, Rajasthan, helping homes and businesses with solar design, installation, subsidy assistance, net metering guidance, and after-sales support.",
 };
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+  { label: "Solar Solutions", href: "/services/residential-rooftop-solar" },
   { label: "Services", href: "/services" },
-  { label: "Subsidy", href: "/government-subsidy" },
-  { label: "Calculators", href: "/solar-savings-calculator" },
+  { label: "Calculator", href: "/solar-savings-calculator" },
+  { label: "Projects", href: "/projects" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -215,33 +219,70 @@ export const services: Service[] = [
 ];
 
 export const stats = [
-  { label: "Years Experience", value: 2, suffix: "+" },
-  { label: "Projects Completed", value: 17, suffix: "+" },
-  { label: "Solar Installed", value: 40, suffix: " kW+" },
-  { label: "Customer Support", value: 100, suffix: "%" },
+  { label: "Local Office", value: 1, suffix: " in Sojat/Pali" },
+  { label: "Site Survey", value: 1, suffix: " before final quote" },
+  { label: "Support", value: 1, suffix: " contact point" },
+  { label: "Real Projects", value: 0, suffix: " listed yet" },
 ];
 
 export const whyChooseUs = [
-  "Complete turnkey EPC solutions",
-  "High quality tier-1 solar components",
+  "Local solar installation support in Sojat and Pali",
+  "Complete EPC service from survey to handover",
+  "Electricity bill analysis before system sizing",
+  "Roof and shadow assessment before final proposal",
+  "Subsidy and application process guidance",
+  "Net metering documentation guidance",
+  "Residential, commercial, and O&M support",
+  "After-sales support for installed systems",
+];
+
+export const trustPlaceholders = [
+  "[ADD REAL CERTIFICATION IF APPLICABLE]",
+  "[ADD REAL GOVERNMENT/DISCOM EMPANELMENT ONLY IF APPLICABLE]",
+  "[ADD REAL PROJECT COUNT AFTER VERIFICATION]",
+];
+
+export const serviceAreas = [
+  "Sojat",
+  "Pali",
+  "[ADD SURROUNDING SERVICE AREA ONLY IF ACTUALLY SERVED]",
+];
+
+export const solarAssumptions = {
+  defaultResidentialTariff: 8,
+  defaultCommercialTariff: 10,
+  dailyGenerationPerKw: 4.2,
+  sqftPerKw: 90,
+  onGridCostPerKw: 65000,
+  hybridCostPerKw: 78000,
+  offGridCostPerKw: 85000,
+  residentialSubsidyNote:
+    "Subsidy is not auto-calculated on this site. Add current verified PM Surya Ghar subsidy values in this config before displaying exact amounts.",
+};
+
+export const pmSuryaGharContent = {
+  title: "PM Surya Ghar Yojana - Rooftop Solar Subsidy Assistance",
+  subsidyAmountNote:
+    "[ADD CURRENT VERIFIED SUBSIDY AMOUNTS FROM OFFICIAL GOVERNMENT/DISCOM SOURCES BEFORE DISPLAYING FIGURES]",
+  documents: [
+    "Recent electricity bill",
+    "Aadhaar/PAN or applicable identity document",
+    "Bank account details where required",
+    "Property/consumer ownership or authorization details where required",
+    "Passport-size photo or other portal-required documents, if applicable",
+  ],
+  disclaimer:
+    "Subsidy eligibility, amount, approval, inspection, net metering, and release of subsidy depend on current government rules, portal requirements, DISCOM process, and customer documents.",
+};
+
+export const customerTypes = ["Residential", "Commercial", "Industrial", "Other"];
+export const enquiryInterests = [
+  "Solar Installation",
   "Government subsidy assistance",
-  "Professional installation team",
-  "Transparent pricing",
-  "Fast installation",
-  "Customized solar design",
-  "Long product warranty",
-  "Excellent after-sales service",
-  "Remote system monitoring",
-  "Energy savings consultation",
-  "Safety-first installation standards",
-  "Trusted solar brands",
-  "On-time project delivery",
-  "Dedicated customer support",
-  "Maximum return on investment",
-  "Hassle-free documentation",
-  "Net metering support",
-  "High customer satisfaction",
-  "Reliable maintenance services",
+  "Commercial Solar",
+  "Solar O&M",
+  "UPS/Battery",
+  "Other",
 ];
 
 export const targetCustomers = [
@@ -272,32 +313,37 @@ export const targetCustomers = [
   },
 ];
 
-export const brandPartners = ["Tata Power Solar", "Waaree", "Adani Solar", "Luminous", "Rayzon Solar", "Premier Energies"];
+export const brandPartners = [
+  "Solar Modules",
+  "Solar Inverters",
+  "UPS Systems",
+  "Battery Backup",
+  "Mounting Structures",
+  "Protection & BOS",
+];
 
 export const projects: Project[] = [
   {
-    title: "Residential Rooftop Solar",
-    location: "Jaipur, Rajasthan",
-    capacity: "5 kW",
+    title: "Add your first residential project here",
+    location: "[ADD REAL LOCATION]",
+    capacity: "[ADD SYSTEM SIZE]",
     category: "Residential",
-    image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1200&q=80",
-    result: "Lower monthly electricity bill with subsidy guidance",
+    panelBrand: "[ADD PANEL BRAND]",
+    inverterBrand: "[ADD INVERTER BRAND]",
+    image: "/images/project-placeholder.svg",
+    result: "Placeholder only. Replace with a real Sunpip installation before publishing as a project.",
+    isPlaceholder: true,
   },
   {
-    title: "Commercial Solar Plant",
-    location: "Jodhpur, Rajasthan",
-    capacity: "15 kW",
+    title: "Add your first commercial project here",
+    location: "[ADD REAL LOCATION]",
+    capacity: "[ADD SYSTEM SIZE]",
     category: "Commercial",
-    image: "https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=1200&q=80",
-    result: "Improved daytime energy savings for business operations",
-  },
-  {
-    title: "Institution Solar Installation",
-    location: "Udaipur, Rajasthan",
-    capacity: "20 kW",
-    category: "Institutional",
-    image: "https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=1200&q=80",
-    result: "Clean energy adoption with long-term maintenance planning",
+    panelBrand: "[ADD PANEL BRAND]",
+    inverterBrand: "[ADD INVERTER BRAND]",
+    image: "/images/project-placeholder.svg",
+    result: "Placeholder only. Add real photographs, system size, brands, and customer type.",
+    isPlaceholder: true,
   },
 ];
 
@@ -323,11 +369,17 @@ export const products: Product[] = [
 ];
 
 export const processSteps = [
-  "Free consultation and bill analysis",
-  "Site survey and roof feasibility",
-  "Custom solar design and proposal",
-  "Subsidy, documentation, and net metering support",
-  "Installation, commissioning, and after-sales maintenance",
+  "Enquiry",
+  "Electricity bill analysis",
+  "Site assessment",
+  "System design",
+  "Quotation",
+  "Documentation/application support",
+  "Installation",
+  "Testing and commissioning",
+  "Net metering/applicable process",
+  "Handover",
+  "After-sales support",
 ];
 
 export const blogPosts: BlogPost[] = [
@@ -353,14 +405,49 @@ export const blogPosts: BlogPost[] = [
 
 export const serviceStates = ["Rajasthan"];
 
-export const roofTypes = ["RCC roof", "Metal shed", "Tile roof", "Ground mount"];
+export const roofTypes = ["RCC", "Metal Sheet", "Tile", "Ground", "Other"];
 
 export const tickerItems = [
-  "Residential rooftop solar EPC",
-  "Government subsidy assistance",
+  "Rooftop solar for homes and businesses",
+  "PM Surya Ghar guidance",
   "Net metering support",
-  "Entire Rajasthan coverage",
+  "Serving Sojat, Pali and nearby areas",
   "UPS, inverter, and battery backup solutions",
 ];
 
 export const legalUpdated = "July 11, 2026";
+
+export const faqItems = [
+  {
+    question: "How much solar capacity do I need?",
+    answer: "Capacity depends on your monthly electricity units, sanctioned load, roof space, shade, and daytime usage. A site survey and bill review give the most reliable recommendation.",
+  },
+  {
+    question: "How much roof space is required?",
+    answer: "As a rough estimate, 1 kW of rooftop solar may need around 80 to 100 sq.ft. of usable shadow-free roof area. Final area depends on panel wattage and layout.",
+  },
+  {
+    question: "What happens during a power cut?",
+    answer: "Most on-grid solar systems shut down during a power cut for safety. Backup requires a UPS, battery, or hybrid system designed for selected loads.",
+  },
+  {
+    question: "What is PM Surya Ghar?",
+    answer: "PM Surya Ghar is a government rooftop solar scheme for eligible residential consumers. Eligibility and subsidy release depend on current rules and DISCOM processes.",
+  },
+  {
+    question: "What is net metering?",
+    answer: "Net metering records solar electricity exported to the grid and adjusts it as per applicable DISCOM rules. The process and approval depend on your connection and local requirements.",
+  },
+  {
+    question: "Can businesses install rooftop solar?",
+    answer: "Yes. Shops, offices, schools, hospitals, factories, and warehouses can use rooftop solar after load analysis, roof assessment, and commercial feasibility review.",
+  },
+  {
+    question: "Can solar be installed on a metal roof?",
+    answer: "Often yes, but structure, sheet condition, mounting method, wind load, and waterproofing must be checked before final design.",
+  },
+  {
+    question: "How do I get a quotation?",
+    answer: "Share your name, mobile number, location, electricity bill, customer type, roof type, and requirement. Sunpip can then review feasibility and suggest next steps.",
+  },
+];

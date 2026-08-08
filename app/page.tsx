@@ -14,12 +14,13 @@ import {
   tickerItems,
   whyChooseUs,
 } from "@/lib/constants";
-import { servicesSchema } from "@/lib/structuredData";
+import { faqSchema, servicesSchema } from "@/lib/structuredData";
 
 export default function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesSchema()) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema()) }} />
       <section className="relative overflow-hidden bg-slate-950 text-white">
         <Image priority src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1800&q=88" alt="Rooftop solar panels installed under clear sunlight" fill sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/78 to-slate-950/25" />
@@ -154,7 +155,7 @@ export default function Home() {
 
       <section className="section bg-slate-50 dark:bg-white/[0.03]">
         <div className="container">
-          <SectionHeader align="center" eyebrow="Brand Partners" title="Trusted solar and power brands." />
+          <SectionHeader align="center" eyebrow="Products" title="Trusted solar and power categories." />
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
             {brandPartners.map((brand) => (
               <div key={brand} className="flex min-h-24 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-center font-black text-slate-800 shadow-sm dark:border-white/10 dark:bg-white/[0.03] dark:text-white">

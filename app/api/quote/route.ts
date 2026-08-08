@@ -5,11 +5,18 @@ type QuoteLead = {
   name?: unknown;
   email?: unknown;
   phone?: unknown;
+  whatsappNumber?: unknown;
   city?: unknown;
+  customerType?: unknown;
   service?: unknown;
+  interestedIn?: unknown;
   state?: unknown;
   roofType?: unknown;
   monthlyBill?: unknown;
+  roofArea?: unknown;
+  billFileName?: unknown;
+  billFileNote?: unknown;
+  calculatorSource?: unknown;
   message?: unknown;
 };
 
@@ -35,6 +42,7 @@ function formatContactLeadMessage(lead: NormalizedLead) {
     "",
     `<b>Name:</b> ${escapeHtml(lead.name)}`,
     `<b>Phone:</b> ${escapeHtml(lead.phone)}`,
+    `<b>WhatsApp:</b> ${escapeHtml(lead.whatsappNumber || "Same/not provided")}`,
     `<b>Email:</b> ${escapeHtml(lead.email)}`,
     `<b>City:</b> ${escapeHtml(lead.city)}`,
     `<b>Roof Type:</b> ${escapeHtml(lead.roofType)}`,
@@ -56,12 +64,19 @@ function formatLeadMessage(lead: NormalizedLead) {
     "",
     `<b>Name:</b> ${escapeHtml(lead.name)}`,
     `<b>Phone:</b> ${escapeHtml(lead.phone)}`,
+    `<b>WhatsApp:</b> ${escapeHtml(lead.whatsappNumber || "Same/not provided")}`,
     `<b>Email:</b> ${escapeHtml(lead.email)}`,
     `<b>City:</b> ${escapeHtml(lead.city)}`,
     `<b>State:</b> ${escapeHtml(lead.state)}`,
+    `<b>Customer Type:</b> ${escapeHtml(lead.customerType)}`,
+    `<b>Interested In:</b> ${escapeHtml(lead.interestedIn)}`,
     `<b>Service:</b> ${escapeHtml(lead.service)}`,
     `<b>Roof Type:</b> ${escapeHtml(lead.roofType)}`,
+    `<b>Roof Area:</b> ${escapeHtml(lead.roofArea || "Not provided")}`,
     `<b>Monthly Bill:</b> Rs. ${escapeHtml(lead.monthlyBill)}`,
+    `<b>Bill Upload:</b> ${escapeHtml(lead.billFileName || "No file selected")}`,
+    `<b>Upload Note:</b> ${escapeHtml(lead.billFileNote || "No upload metadata")}`,
+    `<b>Calculator Source:</b> ${escapeHtml(lead.calculatorSource || "Not provided")}`,
     "",
     `<b>Project Notes:</b> ${escapeHtml(notes)}`,
   ].join("\n");
@@ -91,11 +106,18 @@ export async function POST(request: Request) {
     name: text(payload.name),
     email: text(payload.email),
     phone: text(payload.phone),
+    whatsappNumber: text(payload.whatsappNumber),
     city: text(payload.city),
+    customerType: text(payload.customerType),
     service: text(payload.service),
+    interestedIn: text(payload.interestedIn),
     state: text(payload.state),
     roofType: text(payload.roofType),
     monthlyBill: text(payload.monthlyBill),
+    roofArea: text(payload.roofArea),
+    billFileName: text(payload.billFileName),
+    billFileNote: text(payload.billFileNote),
+    calculatorSource: text(payload.calculatorSource),
     message: text(payload.message),
   };
 
@@ -109,7 +131,7 @@ export async function POST(request: Request) {
   } else {
     const bill = Number(lead.monthlyBill);
 
-    if (!lead.name || !lead.email.includes("@") || lead.phone.length < 8 || !lead.city || !bill || bill < 500) {
+    if (!lead.name || !lead.email.includes("@") || lead.phone.replace(/\D/g, "").length < 10 || !lead.city || !bill || bill < 100) {
       return NextResponse.json(
         { message: "Please add valid contact details, city, and monthly bill." },
         { status: 400 },

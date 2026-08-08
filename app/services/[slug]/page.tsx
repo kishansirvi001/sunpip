@@ -6,6 +6,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { createMetadata } from "@/lib/metadata";
 import { services } from "@/lib/constants";
+import { breadcrumbSchema, serviceSchema } from "@/lib/structuredData";
 import { serviceImageBySlug } from "@/lib/visuals";
 
 type ServicePageProps = {
@@ -31,6 +32,19 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema(service.slug)) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbSchema([
+              { name: "Home", path: "/" },
+              { name: "Services", path: "/services" },
+              { name: service.title, path: `/services/${service.slug}` },
+            ]),
+          ),
+        }}
+      />
       <PageHero
         eyebrow="Solar Service"
         title={service.title}

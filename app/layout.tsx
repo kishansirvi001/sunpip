@@ -6,7 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { siteConfig } from "@/lib/constants";
-import { organizationSchema } from "@/lib/structuredData";
+import { organizationSchema, websiteSchema } from "@/lib/structuredData";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -18,12 +18,16 @@ export const metadata: Metadata = {
   applicationName: siteConfig.name,
   manifest: "/manifest.webmanifest",
   keywords: ["solar EPC Rajasthan", "rooftop solar Rajasthan", "residential rooftop solar", "solar subsidy Rajasthan", "net metering Rajasthan", "solar installer Rajasthan"],
+  alternates: {
+    canonical: siteConfig.url,
+  },
   openGraph: {
     type: "website",
     url: siteConfig.url,
     title: `${siteConfig.name} | Solar EPC Company`,
     description: siteConfig.description,
     siteName: siteConfig.name,
+    locale: "en_IN",
     images: [{ url: "/og-image.svg", width: 1200, height: 630, alt: "SUNPIP SOLUTIONS LLP solar EPC Rajasthan" }],
   },
   twitter: {
@@ -39,6 +43,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema()) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema()) }} />
         <Navbar />
         <main>{children}</main>
         <Footer />

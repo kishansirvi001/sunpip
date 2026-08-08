@@ -15,6 +15,7 @@ import {
   type RoofUnit,
   type SolarSystemType,
 } from "@/utils/solarCalculators";
+import { siteConfig, solarAssumptions } from "@/lib/constants";
 
 type CalculatorKind = "savings" | "size" | "roof" | "emi" | "roi";
 type FieldType = "number" | "select";
@@ -94,14 +95,20 @@ const configs: Record<CalculatorKind, Config> = {
     initialValues: {
       monthlyBill: "5000",
       monthlyConsumption: "",
+      averageTariff: "",
+      location: "Sojat / Pali",
       customerType: "Residential",
+      roofType: "RCC",
       state: "Rajasthan",
       systemType: "On-Grid",
     },
     fields: [
       { name: "monthlyBill", label: "Monthly Electricity Bill", type: "number", suffix: "INR", min: 0, step: 100, helper: "Enter bill or consumption. One is enough." },
       { name: "monthlyConsumption", label: "Monthly Electricity Consumption", type: "number", suffix: "kWh", min: 0, step: 10 },
+      { name: "averageTariff", label: "Average Electricity Tariff", type: "number", suffix: "INR/kWh", min: 0, step: 0.5, helper: "Optional. Leave blank to use planning assumptions." },
+      { name: "location", label: "Location", type: "select", options: ["Sojat / Pali", "Other Rajasthan location"] },
       { name: "customerType", label: "Customer Type", type: "select", options: ["Residential", "Commercial"] },
+      { name: "roofType", label: "Roof Type", type: "select", options: ["RCC", "Metal Sheet", "Tile", "Ground", "Other"] },
       { name: "state", label: "State", type: "select", options: ["Rajasthan"] },
       { name: "systemType", label: "Solar System Type", type: "select", options: ["On-Grid", "Hybrid", "Off-Grid"] },
     ],
@@ -109,14 +116,19 @@ const configs: Record<CalculatorKind, Config> = {
     results: (values) => {
       const result = calculateSolarSavings({
         monthlyBill: numberValue(values, "monthlyBill"),
-        monthlyConsumption: numberValue(values, "monthlyConsumption"),
+        monthlyConsumption: numberValue(values, "monthlyConsumption") || (numberValue(values, "averageTariff") > 0 ? numberValue(values, "monthlyBill") / numberValue(values, "averageTariff") : 0),
         customerType: customerType(values),
         systemType: values.systemType as SolarSystemType,
       });
       return [
         { label: "Recommended Solar System Size", value: formatIndianNumber(result.recommendedKw, " kW") },
+        { label: "Estimated Monthly Generation", value: formatIndianNumber(result.monthlyGeneration, " kWh") },
+        { label: "Estimated Annual Generation", value: formatIndianNumber(result.annualGeneration, " kWh") },
         { label: "Estimated Monthly Savings", value: formatCurrency(result.monthlySavings) },
         { label: "Estimated Annual Savings", value: formatCurrency(result.annualSavings) },
+        { label: "Approximate System Cost", value: formatCurrency(result.systemCost) },
+        { label: "Applicable Subsidy", value: values.customerType === "Residential" ? "To be verified during eligibility check" : "Usually not applicable for commercial projects" },
+        { label: "Approximate Customer Contribution", value: formatCurrency(result.estimatedCustomerContribution) },
         { label: "Estimated Payback Period", value: formatIndianNumber(result.paybackYears, " years") },
       ];
     },
@@ -276,6 +288,19 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
     window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
   }
 
+  function requestQuoteWithResults() {
+    const params = new URLSearchParams({
+      source: config.title,
+      calculator: config.kind,
+      monthlyBill: values.monthlyBill || "",
+      customerType: values.customerType || "",
+      roofType: values.roofType || "",
+      city: values.location || "",
+      message: resultLines.join("; "),
+    });
+    window.location.href = `/get-quote?${params.toString()}`;
+  }
+
   function downloadResults() {
     downloadTextAsPdf(config.title, resultLines);
     setMessage("PDF downloaded.");
@@ -312,7 +337,10 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
         >
           <div>
             <h2 className="text-2xl font-bold text-slate-950 dark:text-white">{config.title}</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{config.description}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{config.description}</p>
+              <p className="mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                Estimates use configurable assumptions: {solarAssumptions.dailyGenerationPerKw} kWh/day per kW, {formatCurrency(solarAssumptions.onGridCostPerKw)} per kW for on-grid systems, and typical tariffs unless you enter your own.
+              </p>
           </div>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -375,7 +403,11 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
             ))}
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <p className="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">
+            These are planning estimates, not guaranteed savings. Final system size, cost, subsidy, generation, and payback depend on your bill, roof, DISCOM rules, site survey, components, and approvals.
+          </p>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <button type="button" disabled={hasErrors} onClick={copyResults} className="rounded-full border border-slate-300 bg-white px-4 py-3 text-sm font-bold text-slate-900 transition hover:border-sun-blue hover:text-sun-blue disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/10 dark:text-white">
               Copy Results
             </button>
@@ -385,7 +417,11 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
             <button type="button" disabled={hasErrors} onClick={shareResults} className="rounded-full bg-sun-blue px-4 py-3 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50">
               Share on WhatsApp
             </button>
+            <button type="button" disabled={hasErrors} onClick={requestQuoteWithResults} className="rounded-full bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-950">
+              Get Detailed Quote
+            </button>
           </div>
+          <p className="mt-4 text-xs text-slate-500 dark:text-slate-400">For help, WhatsApp {siteConfig.whatsappDisplay} or submit the quote form.</p>
         </section>
       </div>
     </div>

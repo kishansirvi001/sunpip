@@ -3,6 +3,7 @@ export const pageHeroImages = {
   quote: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1800&q=86",
   services: "https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=1800&q=86",
   products: "https://images.unsplash.com/photo-1566093097221-ac2335b09e68?auto=format&fit=crop&w=1800&q=86",
+  projects: "https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=1800&q=86",
 };
 
 export const serviceImageBySlug: Record<string, string> = {

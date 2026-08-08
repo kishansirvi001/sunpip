@@ -22,8 +22,11 @@ export type Project = {
   location: string;
   capacity: string;
   category: string;
+  panelBrand?: string;
+  inverterBrand?: string;
   image: string;
   result: string;
+  isPlaceholder?: boolean;
 };
 
 export type Product = {
