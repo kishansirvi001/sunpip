@@ -4,8 +4,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata(
-  "Solar Savings Calculator",
-  "Estimate rooftop solar monthly savings, annual savings, recommended system size, and payback period.",
+  "Solar Savings Calculator for Rajasthan",
+  "Estimate rooftop solar monthly savings, annual savings, recommended system size and payback period for homes and businesses in Rajasthan.",
   "/solar-savings-calculator",
 );
 

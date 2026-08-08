@@ -5,7 +5,12 @@ import { Timeline } from "@/components/ui/Timeline";
 import { createMetadata } from "@/lib/metadata";
 import { siteConfig, targetCustomers } from "@/lib/constants";
 
-export const metadata: Metadata = createMetadata("About Us", "Learn about SUNPIP SOLUTIONS LLP, a Rajasthan Solar EPC company founded in 2025 for residential rooftop solar and clean energy services.", "/about");
+export const metadata: Metadata = createMetadata(
+  "About SunPip Solutions LLP",
+  "Learn about SUNPIP SOLUTIONS LLP, a solar EPC and rooftop solar installation company serving Sojat, Pali and nearby Rajasthan areas.",
+  "/about",
+  { keywords: ["SunPip Solutions LLP", "solar company in Sojat", "solar EPC Pali"] },
+);
 
 export default function AboutPage() {
   return (

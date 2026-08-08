@@ -11,20 +11,20 @@ import { organizationSchema, websiteSchema } from "@/lib/structuredData";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} | Solar EPC Company`,
+    default: `Solar Company in Sojat & Pali | ${siteConfig.name}`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   applicationName: siteConfig.name,
   manifest: "/manifest.webmanifest",
-  keywords: ["solar EPC Rajasthan", "rooftop solar Rajasthan", "residential rooftop solar", "solar subsidy Rajasthan", "net metering Rajasthan", "solar installer Rajasthan"],
+  keywords: ["solar company in Sojat", "solar company in Pali", "solar panel installation in Sojat", "rooftop solar Rajasthan", "PM Surya Ghar Pali", "solar installation Rajasthan"],
   alternates: {
     canonical: siteConfig.url,
   },
   openGraph: {
     type: "website",
     url: siteConfig.url,
-    title: `${siteConfig.name} | Solar EPC Company`,
+    title: `Solar Company in Sojat & Pali | ${siteConfig.name}`,
     description: siteConfig.description,
     siteName: siteConfig.name,
     locale: "en_IN",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} | Solar EPC Company`,
+    title: `Solar Company in Sojat & Pali | ${siteConfig.name}`,
     description: siteConfig.description,
     images: ["/og-image.svg"],
   },

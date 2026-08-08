@@ -5,7 +5,12 @@ import { products } from "@/lib/constants";
 import { createMetadata } from "@/lib/metadata";
 import { pageHeroImages } from "@/lib/visuals";
 
-export const metadata: Metadata = createMetadata("Products", "Solar modules, inverters, pump controllers, and balance-of-system products selected for reliable solar EPC outcomes.", "/products");
+export const metadata: Metadata = createMetadata(
+  "Solar Products for Rooftop Installation",
+  "Solar modules, inverters, battery backup systems and balance-of-system products selected for rooftop solar installation in Rajasthan conditions.",
+  "/products",
+  { keywords: ["solar panels Rajasthan", "solar inverter Pali", "rooftop solar products"] },
+);
 
 export default function ProductsPage() {
   return (

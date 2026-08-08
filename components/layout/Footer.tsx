@@ -34,7 +34,9 @@ export function Footer() {
           <h2 className="text-sm font-bold uppercase tracking-[0.16em] text-slate-300">Services</h2>
           <ul className="mt-5 space-y-3 text-sm">
             {services.slice(0, 6).map((service) => (
-              <li key={service.slug} className="text-slate-300">{service.title}</li>
+              <li key={service.slug}>
+                <Link href={`/services/${service.slug}`} className="text-slate-300 transition hover:text-white">{service.title}</Link>
+              </li>
             ))}
           </ul>
         </div>
@@ -46,8 +48,8 @@ export function Footer() {
       </div>
       <div className="border-t border-white/10 py-5">
         <div className="container flex flex-col gap-3 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} SunPip Solutions. All rights reserved.</p>
-          <p><Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link> · <Link href="/terms" className="hover:text-white">Terms</Link></p>
+          <p>Copyright {new Date().getFullYear()} SunPip Solutions. All rights reserved.</p>
+          <p><Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link> | <Link href="/terms" className="hover:text-white">Terms</Link></p>
         </div>
       </div>
     </footer>

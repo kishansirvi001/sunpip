@@ -4,8 +4,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata(
-  "Solar System Size Calculator",
-  "Calculate recommended solar capacity, panel count, daily generation, and required rooftop area.",
+  "Solar System Size Calculator for Sojat & Pali",
+  "Calculate recommended solar capacity, panel count, daily generation and rooftop area for solar installation planning in Sojat, Pali and Rajasthan.",
   "/solar-system-size-calculator",
 );
 

@@ -4,8 +4,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata(
-  "Rooftop Area Calculator",
-  "Calculate usable roof area and maximum solar capacity for rooftop solar installation.",
+  "Rooftop Area Calculator for Solar Installation",
+  "Calculate usable roof area and maximum rooftop solar capacity before planning solar panel installation in Sojat, Pali or Rajasthan.",
   "/rooftop-area-calculator",
 );
 

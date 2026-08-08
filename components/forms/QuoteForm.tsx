@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { customerTypes, enquiryInterests, roofTypes, services, serviceStates } from "@/lib/constants";
 
 const initial = {
@@ -21,23 +21,22 @@ const initial = {
 };
 
 export function QuoteForm() {
-  const [form, setForm] = useState(initial);
+  const [form, setForm] = useState(() => {
+    if (typeof window === "undefined") return initial;
+    const params = new URLSearchParams(window.location.search);
+    return {
+      ...initial,
+      monthlyBill: params.get("monthlyBill") || initial.monthlyBill,
+      customerType: params.get("customerType") || initial.customerType,
+      roofType: params.get("roofType") || initial.roofType,
+      city: params.get("city") || initial.city,
+      message: params.get("message") || initial.message,
+      calculatorSource: params.get("source") || initial.calculatorSource,
+    };
+  });
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [billFile, setBillFile] = useState<File | null>(null);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setForm((current) => ({
-      ...current,
-      monthlyBill: params.get("monthlyBill") || current.monthlyBill,
-      customerType: params.get("customerType") || current.customerType,
-      roofType: params.get("roofType") || current.roofType,
-      city: params.get("city") || current.city,
-      message: params.get("message") || current.message,
-      calculatorSource: params.get("source") || current.calculatorSource,
-    }));
-  }, []);
 
   function validateFile(file: File) {
     const allowed = ["application/pdf", "image/jpeg", "image/png"];

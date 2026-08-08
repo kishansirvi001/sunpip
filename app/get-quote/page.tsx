@@ -4,7 +4,12 @@ import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
 import { pageHeroImages } from "@/lib/visuals";
 
-export const metadata: Metadata = createMetadata("Quote Request", "Request a solar EPC quote from SunPip Solutions for residential, commercial, industrial, government, O&M, and net metering work.", "/get-quote");
+export const metadata: Metadata = createMetadata(
+  "Get Solar Installation Quote in Sojat & Pali",
+  "Request a SunPip Solutions quote for residential solar, commercial solar, rooftop solar, Solar EPC, subsidy guidance and net metering support in Rajasthan.",
+  "/get-quote",
+  { keywords: ["solar installation quote Sojat", "solar panel installation in Sojat", "solar company in Pali"] },
+);
 
 export default function GetQuotePage() {
   return (

@@ -22,7 +22,7 @@ import type { BlogPost, NavItem, Product, Project, Service } from "@/types/site"
 export const siteConfig = {
   name: "SUNPIP SOLUTIONS LLP",
   shortName: "SunPip Solutions",
-  url: "https://sunpipsolutions.com",
+  url: "https://www.sunpipsolutions.com",
   founded: "2025",
   businessType: "Limited Liability Partnership (LLP)",
   industry: "Solar EPC",
@@ -44,7 +44,7 @@ export const siteConfig = {
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "Solar Solutions", href: "/services/residential-rooftop-solar" },
+  { label: "Solar Solutions", href: "/residential-solar" },
   { label: "Services", href: "/services" },
   { label: "Calculator", href: "/solar-savings-calculator" },
   { label: "Projects", href: "/projects" },
@@ -245,7 +245,7 @@ export const trustPlaceholders = [
 export const serviceAreas = [
   "Sojat",
   "Pali",
-  "[ADD SURROUNDING SERVICE AREA ONLY IF ACTUALLY SERVED]",
+  "Rajasthan",
 ];
 
 export const solarAssumptions = {

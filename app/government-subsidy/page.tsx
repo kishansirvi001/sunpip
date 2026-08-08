@@ -3,8 +3,14 @@ import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { createMetadata } from "@/lib/metadata";
+import Link from "next/link";
 
-export const metadata: Metadata = createMetadata("Government Subsidy", "Government rooftop solar subsidy assistance for eligible residential customers in Rajasthan.", "/government-subsidy");
+export const metadata: Metadata = createMetadata(
+  "Solar Subsidy Assistance in Pali & Rajasthan",
+  "Government rooftop solar subsidy and PM Surya Ghar guidance for eligible residential customers in Pali, Sojat and Rajasthan.",
+  "/government-subsidy",
+  { keywords: ["PM Surya Ghar Pali", "solar subsidy Rajasthan", "rooftop solar subsidy Pali"] },
+);
 
 export default function GovernmentSubsidyPage() {
   const steps = ["Check eligibility and electricity connection details", "Prepare documents and rooftop feasibility", "Submit application and coordinate requirements", "Install approved system with commissioning support", "Complete inspection, net metering, and subsidy follow-up"];
@@ -22,6 +28,20 @@ export default function GovernmentSubsidyPage() {
               </li>
             ))}
           </ol>
+        </div>
+      </section>
+      <section className="section bg-slate-50 dark:bg-white/[0.03]">
+        <div className="container grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { label: "PM Surya Ghar Pali guide", href: "/pm-surya-ghar-solar-subsidy" },
+            { label: "Residential solar", href: "/residential-solar" },
+            { label: "3kW solar system", href: "/3kw-solar-system" },
+            { label: "Subsidy assistance service", href: "/services/government-subsidy-assistance" },
+          ].map((link) => (
+            <Link key={link.href} href={link.href} className="rounded-lg border border-slate-200 bg-white p-4 text-sm font-bold text-slate-800 transition hover:border-sun-blue hover:text-sun-blue dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-100">
+              {link.label}
+            </Link>
+          ))}
         </div>
       </section>
       <section className="section bg-slate-950 text-white">

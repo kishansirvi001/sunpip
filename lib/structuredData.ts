@@ -13,7 +13,7 @@ export function organizationSchema() {
     telephone: `+91${siteConfig.phone}`,
     email: siteConfig.email,
     foundingDate: siteConfig.founded,
-    priceRange: "₹₹",
+    priceRange: "Moderate",
     address: {
       "@type": "PostalAddress",
       streetAddress: siteConfig.address,
@@ -109,6 +109,51 @@ export function faqSchema() {
         text: item.answer,
       },
     })),
+  };
+}
+
+export function faqSchemaForItems(items: Array<{ question: string; answer: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+export function localServiceSchema({
+  name,
+  description,
+  path,
+  serviceType,
+}: {
+  name: string;
+  description: string;
+  path: string;
+  serviceType: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${siteConfig.url}${path}#service`,
+    name,
+    description,
+    serviceType,
+    areaServed: [
+      { "@type": "City", name: "Sojat" },
+      { "@type": "City", name: "Pali" },
+      { "@type": "State", name: "Rajasthan" },
+    ],
+    provider: {
+      "@id": `${siteConfig.url}/#organization`,
+    },
+    url: `${siteConfig.url}${path}`,
   };
 }
 

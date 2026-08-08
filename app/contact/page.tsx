@@ -4,7 +4,12 @@ import { PageHero } from "@/components/ui/PageHero";
 import { siteConfig } from "@/lib/constants";
 import { createMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = createMetadata("Contact", "Contact SUNPIP SOLUTIONS LLP for rooftop solar EPC, subsidy assistance, net metering, UPS, inverter, and battery backup services in Rajasthan.", "/contact");
+export const metadata: Metadata = createMetadata(
+  "Contact Solar Company in Sojat & Pali",
+  "Contact SUNPIP SOLUTIONS LLP for solar panel installation in Sojat, Pali, rooftop solar Rajasthan, subsidy assistance, net metering and backup services.",
+  "/contact",
+  { keywords: ["solar company in Sojat", "solar company in Pali", "solar panel installation in Sojat"] },
+);
 
 export default function ContactPage() {
   return (

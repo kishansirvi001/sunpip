@@ -4,8 +4,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata(
-  "Solar EMI Calculator",
-  "Estimate monthly EMI, loan amount, total interest, and total repayment for a solar loan.",
+  "Solar EMI Calculator for Rooftop Solar",
+  "Estimate monthly EMI, loan amount, total interest and repayment for a rooftop solar project in Rajasthan.",
   "/solar-emi-calculator",
 );
 

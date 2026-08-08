@@ -12,6 +12,7 @@ export const metadata: Metadata = createMetadata(
   "/projects",
   {
     keywords: ["solar projects Rajasthan", "rooftop solar projects Pali", "solar installation Sojat"],
+    noIndex: projects.every((project) => project.isPlaceholder),
   },
 );
 

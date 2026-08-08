@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import { ArrowUpRight, BadgeCheck, Leaf, Zap } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ServiceCard } from "@/components/ui/ServiceCard";
@@ -14,7 +15,17 @@ import {
   tickerItems,
   whyChooseUs,
 } from "@/lib/constants";
+import { createMetadata } from "@/lib/metadata";
+import { seoLandingPages, solarSystemPages } from "@/lib/seoContent";
 import { faqSchema, servicesSchema } from "@/lib/structuredData";
+import Link from "next/link";
+
+export const metadata: Metadata = createMetadata(
+  "Solar Company in Sojat & Pali",
+  "SunPip Solutions LLP is a solar company in Sojat and Pali for rooftop solar, solar panel installation, Solar EPC, PM Surya Ghar guidance and solar installation across Rajasthan.",
+  "",
+  { keywords: ["solar company in Sojat", "solar company in Pali", "solar panel installation in Sojat", "rooftop solar Rajasthan", "solar installation Rajasthan"] },
+);
 
 export default function Home() {
   return (
@@ -59,8 +70,8 @@ export default function Home() {
                 <Zap aria-hidden="true" className="h-6 w-6" />
               </div>
               <div>
-                <p className="text-sm text-slate-200">Typical bill reduction</p>
-                <p className="text-2xl font-black text-white">70% to 90%</p>
+                <p className="text-sm text-slate-200">Solar proposal basis</p>
+                <p className="text-2xl font-black text-white">Bill + site survey</p>
               </div>
             </div>
           </div>
@@ -96,6 +107,24 @@ export default function Home() {
           <SectionHeader align="center" eyebrow="Services" title="Complete solar, inverter, UPS, and backup services." description="A full EPC and asset-care portfolio for homes, businesses, schools, hospitals, and farmers." />
           <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {services.slice(0, 9).map((service) => <ServiceCard key={service.slug} service={service} />)}
+          </div>
+        </div>
+      </section>
+
+      <section className="section bg-white dark:bg-slate-950">
+        <div className="container">
+          <SectionHeader
+            align="center"
+            eyebrow="Solar Solutions"
+            title="Solar pages for Sojat, Pali and Rajasthan searches."
+            description="Explore focused guides for residential solar, commercial solar, rooftop solar, Solar EPC and common system sizes."
+          />
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {[...seoLandingPages, ...solarSystemPages].map((page) => (
+              <Link key={page.slug} href={`/${page.slug}`} className="rounded-lg border border-slate-200 bg-white p-4 text-sm font-bold text-slate-800 shadow-sm transition hover:border-sun-blue hover:text-sun-blue dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-100">
+                {"capacity" in page ? `${page.capacity} Solar System` : page.title}
+              </Link>
+            ))}
           </div>
         </div>
       </section>

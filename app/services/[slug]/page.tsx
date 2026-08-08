@@ -21,7 +21,12 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   const { slug } = await params;
   const service = services.find((item) => item.slug === slug);
   if (!service) return {};
-  return createMetadata(service.title, `${service.title} by SUNPIP SOLUTIONS LLP across Rajasthan. ${service.description}`, `/services/${service.slug}`);
+  return createMetadata(
+    `${service.title} in Sojat, Pali & Rajasthan`,
+    `${service.title} by SUNPIP SOLUTIONS LLP for Sojat, Pali and Rajasthan customers. ${service.description}`,
+    `/services/${service.slug}`,
+    { keywords: [`${service.title} Sojat`, `${service.title} Pali`, "solar installation Rajasthan"] },
+  );
 }
 
 export default async function ServiceDetailPage({ params }: ServicePageProps) {

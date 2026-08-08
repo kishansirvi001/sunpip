@@ -1,10 +1,13 @@
 import type { MetadataRoute } from "next";
 import { calculatorRoutes, navItems, projects, services, siteConfig } from "@/lib/constants";
+import { seoLandingPages, solarSystemPages } from "@/lib/seoContent";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     ...navItems.map((item) => item.href),
     ...calculatorRoutes,
+    ...seoLandingPages.map((page) => `/${page.slug}`),
+    ...solarSystemPages.map((page) => `/${page.slug}`),
     "/get-quote",
     "/government-subsidy",
     "/products",
@@ -13,7 +16,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/privacy-policy",
     "/terms",
   ];
-  const routes = Array.from(new Set(staticRoutes));
+  const hasVerifiedProjects = projects.some((project) => !project.isPlaceholder);
+  const routes = Array.from(new Set(staticRoutes)).filter((href) => href !== "/projects" || hasVerifiedProjects);
   const serviceRoutes = services.map((service) => `/services/${service.slug}`);
 
   return [...routes, ...serviceRoutes].map((href) => ({

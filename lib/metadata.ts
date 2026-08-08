@@ -4,6 +4,7 @@ import { siteConfig } from "@/lib/constants";
 type MetadataOptions = {
   keywords?: string[];
   imageAlt?: string;
+  noIndex?: boolean;
 };
 
 export function createMetadata(title: string, description: string, path = "", options: MetadataOptions = {}): Metadata {
@@ -15,10 +16,10 @@ export function createMetadata(title: string, description: string, path = "", op
     description,
     keywords: options.keywords,
     robots: {
-      index: true,
+      index: !options.noIndex,
       follow: true,
       googleBot: {
-        index: true,
+        index: !options.noIndex,
         follow: true,
         "max-image-preview": "large",
         "max-snippet": -1,

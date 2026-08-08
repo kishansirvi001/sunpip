@@ -4,8 +4,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata(
-  "Solar ROI Calculator",
-  "Calculate rooftop solar net investment, annual net savings, payback period, and ROI.",
+  "Solar ROI Calculator for Rajasthan",
+  "Calculate rooftop solar net investment, annual savings, payback period and ROI for residential or commercial solar in Rajasthan.",
   "/solar-roi-calculator",
 );
 
