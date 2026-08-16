@@ -22,8 +22,8 @@ export function Navbar() {
           <Image
             src="/logo.png"
             alt={siteConfig.name}
-            width={752}
-            height={740}
+            width={1536}
+            height={1024}
             priority
             className="h-[4.5rem] w-auto"
           />

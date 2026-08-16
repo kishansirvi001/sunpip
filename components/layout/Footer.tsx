@@ -10,7 +10,7 @@ export function Footer() {
       <div className="container grid gap-10 py-14 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="" width={752} height={740} className="h-20 w-auto rounded-md bg-white p-1.5" />
+            <Image src="/logo.png" alt="" width={1536} height={1024} className="h-20 w-auto rounded-md bg-white p-1.5" />
           </div>
           <p className="mt-5 max-w-sm text-sm leading-6 text-slate-300">{siteConfig.description}</p>
           <div className="mt-6 space-y-3 text-sm text-slate-300">
