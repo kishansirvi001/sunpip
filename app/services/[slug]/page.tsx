@@ -6,7 +6,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { createMetadata } from "@/lib/metadata";
 import { services } from "@/lib/constants";
-import { breadcrumbSchema, serviceSchema } from "@/lib/structuredData";
+import { breadcrumbSchema, serviceSchema, webPageSchema } from "@/lib/structuredData";
 import { serviceImageBySlug } from "@/lib/visuals";
 
 type ServicePageProps = {
@@ -37,6 +37,18 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            webPageSchema({
+              name: `${service.title} in Sojat, Pali & Rajasthan`,
+              description: `${service.title} by SUNPIP SOLUTIONS LLP for Sojat, Pali and Rajasthan customers. ${service.description}`,
+              path: `/services/${service.slug}`,
+            }),
+          ),
+        }}
+      />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema(service.slug)) }} />
       <script
         type="application/ld+json"

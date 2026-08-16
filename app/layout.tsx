@@ -17,7 +17,24 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   applicationName: siteConfig.name,
   manifest: "/manifest.webmanifest",
+  authors: [{ name: siteConfig.name, url: siteConfig.url }],
+  creator: siteConfig.name,
+  publisher: siteConfig.name,
+  category: "Solar EPC and rooftop solar installation",
+  referrer: "origin-when-cross-origin",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   keywords: ["solar company in Sojat", "solar company in Pali", "solar panel installation in Sojat", "rooftop solar Rajasthan", "PM Surya Ghar Pali", "solar installation Rajasthan"],
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/logo.png", type: "image/png" },
+    ],
+    apple: [{ url: "/logo.png", type: "image/png" }],
+  },
   alternates: {
     canonical: siteConfig.url,
   },

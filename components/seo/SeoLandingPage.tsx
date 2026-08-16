@@ -3,7 +3,7 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import type { SeoLandingPage } from "@/lib/seoContent";
-import { breadcrumbSchema, faqSchemaForItems, localServiceSchema } from "@/lib/structuredData";
+import { breadcrumbSchema, faqSchemaForItems, localServiceSchema, webPageSchema } from "@/lib/structuredData";
 import { pageHeroImages } from "@/lib/visuals";
 
 export function SeoLandingPageView({ page }: { page: SeoLandingPage }) {
@@ -11,6 +11,7 @@ export function SeoLandingPageView({ page }: { page: SeoLandingPage }) {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ name: page.metaTitle, description: page.metaDescription, path })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localServiceSchema({ name: page.title, description: page.metaDescription, path, serviceType: page.serviceType })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchemaForItems(page.faqs)) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema([{ name: "Home", path: "/" }, { name: page.title, path }])) }} />

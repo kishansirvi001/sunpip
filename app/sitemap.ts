@@ -2,6 +2,26 @@ import type { MetadataRoute } from "next";
 import { calculatorRoutes, navItems, projects, services, siteConfig } from "@/lib/constants";
 import { seoLandingPages, solarSystemPages } from "@/lib/seoContent";
 
+const lastModified = new Date("2026-08-16");
+
+function getPriority(href: string) {
+  if (href === "/") return 1;
+  if (href.startsWith("/services/")) return 0.85;
+  if (href === "/services") return 0.9;
+  if (href === "/get-quote" || href === "/contact") return 0.9;
+  if (seoLandingPages.some((page) => `/${page.slug}` === href)) return 0.85;
+  if (solarSystemPages.some((page) => `/${page.slug}` === href)) return 0.8;
+  if (calculatorRoutes.includes(href)) return 0.75;
+  if (href === "/privacy-policy" || href === "/terms") return 0.35;
+  return 0.7;
+}
+
+function getChangeFrequency(href: string): MetadataRoute.Sitemap[number]["changeFrequency"] {
+  if (href === "/" || href === "/services") return "weekly";
+  if (href === "/privacy-policy" || href === "/terms") return "yearly";
+  return "monthly";
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     ...navItems.map((item) => item.href),
@@ -22,8 +42,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [...routes, ...serviceRoutes].map((href) => ({
     url: `${siteConfig.url}${href === "/" ? "" : href}`,
-    lastModified: new Date("2026-08-08"),
-    changeFrequency: "monthly",
-    priority: href === "/" ? 1 : href.startsWith("/services") ? 0.85 : 0.8,
+    lastModified,
+    changeFrequency: getChangeFrequency(href),
+    priority: getPriority(href),
   }));
 }
