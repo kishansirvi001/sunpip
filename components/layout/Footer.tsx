@@ -27,6 +27,9 @@ export function Footer() {
                 <Link href={item.href} className="text-slate-300 transition hover:text-white">{item.label}</Link>
               </li>
             ))}
+            <li>
+              <a href="https://file-fixer-five.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-slate-300 transition hover:text-white">File Fixer</a>
+            </li>
           </ul>
         </div>
         <div>
