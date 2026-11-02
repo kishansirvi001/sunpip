@@ -1,15 +1,17 @@
 "use client";
 
 import { siteConfig } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
 
 export function FloatingWhatsApp() {
   return (
     <a
+      onClick={() => trackEvent("whatsapp_click", { placement: "floating" })}
       href={`https://wa.me/${siteConfig.whatsapp}?text=Hello%20SUNPIP%20SOLUTIONS%2C%20I%20want%20a%20solar%20quote.`}
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with SunPip Solutions on WhatsApp"
-      className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-soft transition hover:scale-110 hover:bg-[#20ba5a] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2 dark:focus:ring-offset-slate-950"
+      className="fixed bottom-5 right-5 z-40 hidden h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-soft transition hover:scale-110 hover:bg-[#20ba5a] focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2 dark:focus:ring-offset-slate-950 md:flex"
     >
       <svg
         viewBox="0 0 24 24"

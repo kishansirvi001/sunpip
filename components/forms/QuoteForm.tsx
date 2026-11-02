@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { customerTypes, enquiryInterests, roofTypes, services, serviceStates } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
 
 const initial = {
   name: "",
@@ -18,6 +19,7 @@ const initial = {
   roofArea: "",
   message: "",
   calculatorSource: "",
+  website: "",
 };
 
 export function QuoteForm() {
@@ -80,6 +82,7 @@ export function QuoteForm() {
       }
 
       setStatus("Quote request sent. Our team will contact you soon.");
+      trackEvent("quote_form_submit", { form: "quote" });
       setForm(initial);
       setBillFile(null);
     } catch {
@@ -105,6 +108,7 @@ export function QuoteForm() {
         <label className="field-label">State<select value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} className="field-input">{serviceStates.map((state) => <option key={state}>{state}</option>)}</select></label>
       </div>
       <label className="field-label">Message<textarea rows={4} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="field-input resize-none" /></label>
+      <label aria-hidden="true" className="absolute -left-[10000px] h-px w-px overflow-hidden">Leave this field empty<input tabIndex={-1} autoComplete="off" value={form.website} onChange={(e)=>setForm({...form,website:e.target.value})} /></label>
       <div className="grid gap-2">
         <label className="field-label">
           Optional Electricity Bill Upload

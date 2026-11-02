@@ -4,16 +4,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X, ChevronDown, Phone } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 
 import { navItems, siteConfig } from "@/lib/constants";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import { MegaMenu } from "@/components/layout/MegaMenu";
 import { ButtonLink } from "@/components/ui/ButtonLink";
+import hi from "@/messages/hi.json";
+import { trackEvent } from "@/lib/analytics";
 
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const localizedLabel = (label: string) => pathname.startsWith("/hi") ? ({ Home: hi.nav.home, Services: hi.nav.services, "Solar Calculator": hi.nav.calculator, Projects: hi.nav.projects, About: hi.nav.about, Contact: hi.nav.contact }[label] ?? label) : label;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/95 shadow-[0_12px_36px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/92">
@@ -29,9 +31,9 @@ export function Navbar() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 rounded-full border border-slate-200 bg-white p-1.5 shadow-sm dark:border-white/10 dark:bg-white/[0.06] lg:flex">
+        <nav className="hidden items-center gap-1 rounded-full border border-slate-200 bg-white p-1.5 shadow-sm dark:border-white/10 dark:bg-white/[0.06] xl:flex">
           {navItems.map((item) => (
-            <div key={item.href} className={item.label === "Services" ? "group relative" : "relative"}>
+            <div key={item.href} className="relative">
               <Link
                 href={item.href}
                 className={`flex items-center gap-1 rounded-full px-4 py-2.5 text-sm font-bold transition ${
@@ -40,27 +42,27 @@ export function Navbar() {
                     : "text-slate-700 hover:bg-slate-100 hover:text-sun-blue dark:text-slate-200 dark:hover:bg-white/10"
                 }`}
               >
-                {item.label}
-                {item.label === "Services" ? <ChevronDown aria-hidden="true" className="h-4 w-4" /> : null}
+                {localizedLabel(item.label)}
               </Link>
 
-              {item.label === "Services" ? <MegaMenu /> : null}
             </div>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
+        <div className="hidden items-center gap-3 xl:flex">
+          <Link href={pathname.startsWith("/hi") ? "/" : "/hi"} hrefLang={pathname.startsWith("/hi") ? "en" : "hi"} className="rounded-full border border-slate-300 px-3 py-2 text-sm font-bold" aria-label={pathname.startsWith("/hi") ? "Switch to English" : "हिन्दी में देखें"}>{pathname.startsWith("/hi") ? "EN" : "HI"}</Link>
           <ThemeToggle />
-          <ButtonLink href={siteConfig.phoneHref} variant="ghost" className="px-4 py-2.5">
+          <ButtonLink href={siteConfig.phoneHref} onClick={() => trackEvent("call_click", { placement: "navbar" })} variant="ghost" className="px-4 py-2.5">
             <Phone aria-hidden="true" className="h-4 w-4" />
             Call Now
           </ButtonLink>
           <ButtonLink href="/get-quote" className="px-5 py-2.5">
-            Get Quote
+            {pathname.startsWith("/hi") ? hi.nav.quote : "Get Quote"}
           </ButtonLink>
         </div>
 
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex items-center gap-2 xl:hidden">
+          <Link href={pathname.startsWith("/hi") ? "/" : "/hi"} hrefLang={pathname.startsWith("/hi") ? "en" : "hi"} className="rounded-full border border-slate-300 px-3 py-2 text-sm font-bold" aria-label={pathname.startsWith("/hi") ? "Switch to English" : "हिन्दी में देखें"}>{pathname.startsWith("/hi") ? "EN" : "HI"}</Link>
           <ThemeToggle />
           <button
             type="button"
@@ -76,7 +78,7 @@ export function Navbar() {
 
       {mobileOpen && (
         <div className="border-t border-slate-200 bg-white shadow-xl dark:border-white/10 dark:bg-slate-950 lg:hidden">
-          <div className="container grid gap-2 py-5">
+          <div className="container grid gap-2 py-5 xl:hidden">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -88,7 +90,7 @@ export function Navbar() {
                     : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10"
                 }`}
               >
-                {item.label}
+                {localizedLabel(item.label)}
               </Link>
             ))}
 
@@ -98,7 +100,7 @@ export function Navbar() {
                 Call Now
               </ButtonLink>
               <ButtonLink href="/get-quote" onClick={() => setMobileOpen(false)}>
-                Get Free Quote
+                {pathname.startsWith("/hi") ? hi.nav.quote : "Get Free Quote"}
               </ButtonLink>
             </div>
           </div>

@@ -33,8 +33,20 @@ export function monthlyUnitsFromInput(monthlyBill: number, monthlyConsumption: n
   const bill = Math.max(safeNumber(monthlyBill), 0);
   const consumption = Math.max(safeNumber(monthlyConsumption), 0);
   if (consumption > 0) return consumption;
-  const tariff = customerType === "Commercial" ? COMMERCIAL_TARIFF : DEFAULT_TARIFF;
-  return bill > 0 ? bill / tariff : 0;
+  const slabs = customerType === "Commercial" ? solarAssumptions.tariffSlabs.commercial : solarAssumptions.tariffSlabs.residential;
+  let remaining = bill;
+  let units = 0;
+  let previousLimit = 0;
+  for (const slab of slabs) {
+    const width = slab.upToUnits - previousLimit;
+    const slabCost = width * slab.rate;
+    const used = Math.min(remaining, slabCost);
+    units += used / slab.rate;
+    remaining -= used;
+    previousLimit = slab.upToUnits;
+    if (remaining <= 0 || !Number.isFinite(width)) break;
+  }
+  return Math.max(units, bill > 0 ? bill / (customerType === "Commercial" ? COMMERCIAL_TARIFF : DEFAULT_TARIFF) : 0);
 }
 
 export function calculateSolarSavings(input: {
@@ -42,21 +54,26 @@ export function calculateSolarSavings(input: {
   monthlyConsumption: number;
   customerType: CustomerType;
   systemType: SolarSystemType;
+  averageTariff?: number;
 }) {
   const monthlyBill = Math.max(safeNumber(input.monthlyBill), 0);
   const monthlyUnits = monthlyUnitsFromInput(monthlyBill, input.monthlyConsumption, input.customerType);
-  const tariff = input.customerType === "Commercial" ? COMMERCIAL_TARIFF : DEFAULT_TARIFF;
+  const tariff = input.averageTariff && input.averageTariff > 0
+    ? input.averageTariff
+    : monthlyBill > 0 && monthlyUnits > 0
+      ? monthlyBill / monthlyUnits
+      : input.customerType === "Commercial" ? COMMERCIAL_TARIFF : DEFAULT_TARIFF;
   const systemMultiplier = input.systemType === "Hybrid" ? 1.1 : input.systemType === "Off-Grid" ? 1.2 : 1;
   const recommendedKw = (monthlyUnits / 125) * systemMultiplier;
   const monthlySavings = Math.min(monthlyUnits * tariff * 0.9, monthlyBill || monthlyUnits * tariff);
   const annualSavings = monthlySavings * 12;
-  const costPerKw = input.systemType === "Off-Grid"
-    ? solarAssumptions.offGridCostPerKw
-    : input.systemType === "Hybrid"
-      ? solarAssumptions.hybridCostPerKw
-      : solarAssumptions.onGridCostPerKw;
-  const paybackYears = annualSavings > 0 ? (recommendedKw * costPerKw) / annualSavings : 0;
+  const costPerKw = solarAssumptions.costBands.find((band) => recommendedKw <= band.maxKw)?.costPerKw ?? solarAssumptions.costBands.at(-1)!.costPerKw;
   const systemCost = recommendedKw * costPerKw;
+  const subsidy = input.customerType === "Residential"
+    ? Math.min(Math.min(recommendedKw, 2) * solarAssumptions.subsidyPerKwFirstTwo + Math.max(0, Math.min(recommendedKw - 2, 1)) * solarAssumptions.subsidyThirdKw, solarAssumptions.maxResidentialSubsidy)
+    : 0;
+  const netCost = Math.max(0, systemCost - subsidy);
+  const paybackYears = annualSavings > 0 ? netCost / annualSavings : 0;
 
   return {
     recommendedKw,
@@ -66,8 +83,10 @@ export function calculateSolarSavings(input: {
     monthlyGeneration: recommendedKw * DAILY_GENERATION_PER_KW * 30,
     annualGeneration: recommendedKw * DAILY_GENERATION_PER_KW * 365,
     systemCost,
-    estimatedCustomerContribution: systemCost,
-    subsidyNote: solarAssumptions.residentialSubsidyNote,
+    subsidy,
+    netCost,
+    estimatedCustomerContribution: netCost,
+    subsidyNote: solarAssumptions.subsidyNote,
   };
 }
 

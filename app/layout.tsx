@@ -5,6 +5,8 @@ import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
+import { StickyCTA } from "@/components/layout/StickyCTA";
+import { Analytics } from "@/components/layout/Analytics";
 import { siteConfig } from "@/lib/constants";
 import { organizationSchema, websiteSchema } from "@/lib/structuredData";
 
@@ -27,7 +29,6 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  keywords: ["solar company in Sojat", "solar company in Pali", "solar panel installation in Sojat", "rooftop solar Rajasthan", "PM Surya Ghar Pali", "solar installation Rajasthan"],
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
@@ -45,13 +46,13 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     siteName: siteConfig.name,
     locale: "en_IN",
-    images: [{ url: "/og-image.svg", width: 1200, height: 630, alt: "SUNPIP SOLUTIONS LLP solar EPC Rajasthan" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "SUNPIP SOLUTIONS LLP rooftop solar in Sojat and Pali" }],
   },
   twitter: {
     card: "summary_large_image",
     title: `Solar Company in Sojat & Pali | ${siteConfig.name}`,
     description: siteConfig.description,
-    images: ["/og-image.svg"],
+    images: ["/og-image.png"],
   },
 };
 
@@ -65,8 +66,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <main>{children}</main>
         <Footer />
         <FloatingWhatsApp />
+        <StickyCTA />
         <ScrollToTop />
         <CookieBanner />
+        <Analytics />
       </body>
     </html>
   );

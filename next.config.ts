@@ -10,15 +10,14 @@ const nextConfig: NextConfig = {
         destination: "https://www.sunpipsolutions.com/:path*",
         permanent: true,
       },
+      { source: "/residential-solar", destination: "/services/residential-rooftop-solar", permanent: true },
+      { source: "/solar-epc", destination: "/services/complete-solar-epc", permanent: true },
+      { source: "/government-subsidy", destination: "/pm-surya-ghar-solar-subsidy", permanent: true },
+      { source: "/services/government-subsidy-assistance", destination: "/pm-surya-ghar-solar-subsidy", permanent: true },
     ];
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-    ],
+    formats: ["image/avif", "image/webp"],
   },
 };
 

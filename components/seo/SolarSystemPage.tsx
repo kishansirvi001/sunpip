@@ -5,13 +5,15 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import type { SolarSystemPage } from "@/lib/seoContent";
 import { breadcrumbSchema, faqSchemaForItems, localServiceSchema, webPageSchema } from "@/lib/structuredData";
 import { pageHeroImages } from "@/lib/visuals";
+import { faqItems } from "@/lib/constants";
 
 export function SolarSystemPageView({ page }: { page: SolarSystemPage }) {
   const path = `/${page.slug}`;
+  const faqs = [...page.faqs, ...faqItems.slice(8)];
   const links = [
     { label: "Solar system size calculator", href: "/solar-system-size-calculator" },
     { label: "Solar savings calculator", href: "/solar-savings-calculator" },
-    { label: "Residential solar", href: "/residential-solar" },
+    { label: "Residential solar", href: "/services/residential-rooftop-solar" },
     { label: "Commercial solar", href: "/commercial-solar" },
     { label: "Request quote", href: "/get-quote" },
     { label: "Book site visit", href: "/contact" },
@@ -21,7 +23,7 @@ export function SolarSystemPageView({ page }: { page: SolarSystemPage }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ name: page.metaTitle, description: page.metaDescription, path })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localServiceSchema({ name: `${page.capacity} Solar System`, description: page.metaDescription, path, serviceType: `${page.capacity} rooftop solar system planning` })) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchemaForItems(page.faqs)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchemaForItems(faqs)) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema([{ name: "Home", path: "/" }, { name: `${page.capacity} Solar System`, path }])) }} />
       <PageHero eyebrow={`${page.capacity} Solar System`} title={page.heroTitle} description={page.heroDescription} ctaHref="/get-quote" ctaLabel="Request quote" imageSrc={pageHeroImages.default} imageAlt={`${page.capacity} rooftop solar system planning in Rajasthan`} />
       <section className="section bg-white dark:bg-slate-950">
@@ -48,6 +50,25 @@ export function SolarSystemPageView({ page }: { page: SolarSystemPage }) {
         </div>
       </section>
       <section className="section bg-slate-50 dark:bg-white/[0.03]">
+        <div className="container grid gap-6">
+          {page.guidance.map((section) => (
+            <article key={section.title} className="grid gap-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-white/[0.03] lg:grid-cols-[0.85fr_1.15fr]">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-950 dark:text-white">{section.title}</h2>
+                <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{section.body}</p>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {section.points.map((point) => (
+                  <div key={point} className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm font-semibold text-slate-800 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100">
+                    {point}
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section className="section bg-white dark:bg-slate-950">
         <div className="container">
           <SectionHeader eyebrow="Related pages" title="Compare capacity, savings and services." />
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -63,7 +84,7 @@ export function SolarSystemPageView({ page }: { page: SolarSystemPage }) {
         <div className="container grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <SectionHeader eyebrow="FAQ" title={`${page.capacity} solar system FAQs.`} />
           <div className="grid gap-4">
-            {page.faqs.map((item) => (
+            {faqs.map((item) => (
               <article key={item.question} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
                 <h3 className="text-lg font-bold text-slate-950 dark:text-white">{item.question}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{item.answer}</p>

@@ -32,7 +32,7 @@ export const siteConfig = {
   phoneHref: "tel:+918999088903",
   whatsapp: "917023945096",
   whatsappDisplay: "7023945096",
-  email: "sunpipsolutions@gmail.com",
+  email: "info@sunpipsolutions.com",
   instagram: "@sunpipsolutionsllp",
   address: "Sojat, Pali, Rajasthan, India",
   googleBusinessProfileUrl: "",
@@ -44,9 +44,8 @@ export const siteConfig = {
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
-  { label: "Solar Solutions", href: "/residential-solar" },
   { label: "Services", href: "/services" },
-  { label: "Calculator", href: "/solar-savings-calculator" },
+  { label: "Solar Calculator", href: "/solar-savings-calculator" },
   { label: "Projects", href: "/projects" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
@@ -245,6 +244,11 @@ export const trustPlaceholders = [
 export const serviceAreas = [
   "Sojat",
   "Pali",
+  "Sumerpur",
+  "Jaitaran",
+  "Bali",
+  "Marwar Junction",
+  "Rani",
   "Rajasthan",
 ];
 
@@ -253,11 +257,22 @@ export const solarAssumptions = {
   defaultCommercialTariff: 10,
   dailyGenerationPerKw: 4.2,
   sqftPerKw: 90,
-  onGridCostPerKw: 65000,
-  hybridCostPerKw: 78000,
-  offGridCostPerKw: 85000,
-  residentialSubsidyNote:
-    "Subsidy is not auto-calculated on this site. Add current verified PM Surya Ghar subsidy values in this config before displaying exact amounts.",
+  analysisYears: 25,
+  annualGenerationDegradation: 0.005,
+  // PLACEHOLDER editable planning assumptions. Replace with verified local tariffs and approved current quotes.
+  costBands: [
+    { maxKw: 1, costPerKw: 58000 },
+    { maxKw: 3, costPerKw: 52000 },
+    { maxKw: Infinity, costPerKw: 48000 },
+  ],
+  tariffSlabs: {
+    residential: [{ upToUnits: 100, rate: 3 }, { upToUnits: 300, rate: 6 }, { upToUnits: Infinity, rate: 8 }],
+    commercial: [{ upToUnits: 100, rate: 6 }, { upToUnits: 300, rate: 9 }, { upToUnits: Infinity, rate: 12 }],
+  },
+  subsidyPerKwFirstTwo: 30000,
+  subsidyThirdKw: 18000,
+  maxResidentialSubsidy: 78000,
+  subsidyNote: "Subsidy as per current PM Surya Ghar guidelines; verify at pmsuryaghar.gov.in",
 };
 
 export const pmSuryaGharContent = {
@@ -328,9 +343,17 @@ export const projects: Project[] = [
     location: "[ADD REAL LOCATION]",
     capacity: "[ADD SYSTEM SIZE]",
     category: "Residential",
+    systemType: "[ADD ON-GRID/HYBRID/OFF-GRID]",
     panelBrand: "[ADD PANEL BRAND]",
     inverterBrand: "[ADD INVERTER BRAND]",
+    mountingStructure: "[ADD STRUCTURE TYPE]",
     image: "/images/project-placeholder.svg",
+    gallery: [],
+    generation: "[ADD VERIFIED GENERATION IF AVAILABLE]",
+    savings: "[ADD VERIFIED SAVINGS IF CUSTOMER APPROVES]",
+    installationDate: "[ADD INSTALLATION MONTH/YEAR]",
+    projectDetails:
+      "Add real project notes: roof type, capacity reason, components, installation challenges, commissioning details, maintenance plan and approved photos.",
     result: "Placeholder only. Replace with a real Sunpip installation before publishing as a project.",
     isPlaceholder: true,
   },
@@ -339,9 +362,17 @@ export const projects: Project[] = [
     location: "[ADD REAL LOCATION]",
     capacity: "[ADD SYSTEM SIZE]",
     category: "Commercial",
+    systemType: "[ADD ON-GRID/HYBRID/OFF-GRID]",
     panelBrand: "[ADD PANEL BRAND]",
     inverterBrand: "[ADD INVERTER BRAND]",
+    mountingStructure: "[ADD STRUCTURE TYPE]",
     image: "/images/project-placeholder.svg",
+    gallery: [],
+    generation: "[ADD VERIFIED GENERATION IF AVAILABLE]",
+    savings: "[ADD VERIFIED SAVINGS IF CUSTOMER APPROVES]",
+    installationDate: "[ADD INSTALLATION MONTH/YEAR]",
+    projectDetails:
+      "Add real project notes: customer type, load profile, roof type, final capacity, components, safety scope, generation/savings proof and approved photos.",
     result: "Placeholder only. Add real photographs, system size, brands, and customer type.",
     isPlaceholder: true,
   },
@@ -352,19 +383,19 @@ export const products: Product[] = [
     title: "Tier-1 Solar Modules",
     category: "Panels",
     description: "Reliable high-efficiency modules from trusted solar brands for Rajasthan rooftop conditions.",
-    image: "https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=900&q=80",
+    image: "/images/project-placeholder.svg",
   },
   {
     title: "Solar Inverters",
     category: "Inverters",
     description: "Grid-tie, hybrid, and backup inverter options selected according to site load and monitoring needs.",
-    image: "https://images.unsplash.com/photo-1566093097221-ac2335b09e68?auto=format&fit=crop&w=900&q=80",
+    image: "/images/project-placeholder.svg",
   },
   {
     title: "Battery Backup Systems",
     category: "Backup",
     description: "Battery and UPS solutions for homes, businesses, schools, hospitals, and critical power needs.",
-    image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=900&q=80",
+    image: "/images/project-placeholder.svg",
   },
 ];
 
@@ -438,6 +469,12 @@ export const faqItems = [
     question: "What is net metering?",
     answer: "Net metering records solar electricity exported to the grid and adjusts it as per applicable DISCOM rules. The process and approval depend on your connection and local requirements.",
   },
+  { question: "When is the PM Surya Ghar subsidy paid?", answer: "For eligible residential installations, the subsidy is processed after commissioning, inspection and approval steps are completed. The portal currently describes transfer to the consumer's bank account (or loan account where applicable); timing depends on complete documents and approval. Check pmsuryaghar.gov.in for current status." },
+  { question: "How long does net metering take?", answer: "There is no single guaranteed timeline. DISCOM review, inspection, documents and local workload affect approval. We can help you follow up, but cannot promise a date." },
+  { question: "What about panel and inverter warranties?", answer: "Warranty coverage depends on the selected manufacturer, product and written terms. Ask for the applicable warranty documents with your final quote." },
+  { question: "Will dust and monsoon weather affect solar output?", answer: "Dust, shade, cloud cover, rain and seasonal sunlight change generation. A suitable design and safe periodic cleaning help maintain performance; no fixed output is guaranteed." },
+  { question: "What maintenance does a rooftop system need?", answer: "Keep panels reasonably clean, monitor the inverter and have faults or electrical work checked by a qualified technician. Cleaning frequency depends on local dust and site conditions." },
+  { question: "What if the DISCOM process is delayed?", answer: "We can help check application status and identify pending documents. DISCOM decisions and timelines are outside the installer’s control." },
   {
     question: "Can businesses install rooftop solar?",
     answer: "Yes. Shops, offices, schools, hospitals, factories, and warehouses can use rooftop solar after load analysis, roof assessment, and commercial feasibility review.",

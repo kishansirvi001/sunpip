@@ -1,6 +1,7 @@
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import Image from "next/image";
 import { pageHeroImages } from "@/lib/visuals";
+import { imageBlurData } from "@/lib/visuals";
 
 type PageHeroProps = {
   eyebrow: string;
@@ -15,7 +16,7 @@ type PageHeroProps = {
 export function PageHero({ eyebrow, title, description, ctaHref, ctaLabel, imageSrc = pageHeroImages.default, imageAlt = "Solar energy project" }: PageHeroProps) {
   return (
     <section className="relative overflow-hidden border-b border-slate-200 bg-slate-950 py-16 text-white dark:border-white/10 sm:py-20 lg:py-24">
-      <Image priority src={imageSrc} alt={imageAlt} fill sizes="100vw" className="object-cover" />
+      <Image priority src={imageSrc} alt={imageAlt} fill sizes="100vw" className="object-cover" placeholder="blur" blurDataURL={imageBlurData} />
       <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-950/35" />
       <div className="container relative">
         <div className="max-w-4xl">

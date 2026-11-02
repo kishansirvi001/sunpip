@@ -3,6 +3,7 @@ import { ContactForm } from "@/components/forms/ContactForm";
 import { PageHero } from "@/components/ui/PageHero";
 import { siteConfig } from "@/lib/constants";
 import { createMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, webPageSchema } from "@/lib/structuredData";
 
 export const metadata: Metadata = createMetadata(
   "Contact Solar Company in Sojat & Pali",
@@ -14,6 +15,8 @@ export const metadata: Metadata = createMetadata(
 export default function ContactPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ name: "Contact Solar Company in Sojat and Pali", description: "Contact SunPip Solutions for rooftop solar installation and site survey in Rajasthan.", path: "/contact" })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }])) }} />
       <PageHero eyebrow="Contact" title="Talk to a Rajasthan solar EPC specialist." description="Share your city, electricity bill, roof type, and project requirement. We will help you understand feasibility, sizing, subsidy, approvals, and next steps." />
       <section className="section bg-white dark:bg-slate-950">
         <div className="container grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">

@@ -3,6 +3,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { createMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, webPageSchema } from "@/lib/structuredData";
 import Link from "next/link";
 
 export const metadata: Metadata = createMetadata(
@@ -16,6 +17,8 @@ export default function GovernmentSubsidyPage() {
   const steps = ["Check eligibility and electricity connection details", "Prepare documents and rooftop feasibility", "Submit application and coordinate requirements", "Install approved system with commissioning support", "Complete inspection, net metering, and subsidy follow-up"];
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ name: "Solar Subsidy Assistance in Pali and Rajasthan", description: "Government rooftop solar subsidy and PM Surya Ghar guidance for eligible residential customers.", path: "/government-subsidy" })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Government Subsidy", path: "/government-subsidy" }])) }} />
       <PageHero eyebrow="Subsidy Assistance" title="Make rooftop solar more affordable with guided subsidy support." description="SUNPIP SOLUTIONS LLP helps eligible Rajasthan homeowners understand government subsidy requirements, documentation, and net metering steps." ctaHref="/get-quote" ctaLabel="Check eligibility" />
       <section className="section bg-white dark:bg-slate-950">
         <div className="container grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">

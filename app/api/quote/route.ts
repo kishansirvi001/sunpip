@@ -18,9 +18,13 @@ type QuoteLead = {
   billFileNote?: unknown;
   calculatorSource?: unknown;
   message?: unknown;
+  website?: unknown;
+  leadSource?: unknown;
 };
 
 type NormalizedLead = Required<Record<keyof QuoteLead, string>>;
+
+const requestTimes = new Map<string, number[]>();
 
 function text(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -83,17 +87,14 @@ function formatLeadMessage(lead: NormalizedLead) {
 }
 
 export async function POST(request: Request) {
-  const botToken = process.env.TELEGRAM_BOT_TOKEN?.trim();
-  const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
-
-  if (!botToken || !chatId) {
-    return NextResponse.json(
-      { message: "Telegram lead alerts are not configured yet." },
-      { status: 503 },
-    );
-  }
-
   let payload: QuoteLead;
+
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const now = Date.now();
+  const recent = (requestTimes.get(forwarded) ?? []).filter((time) => now - time < 60_000);
+  if (recent.length >= 5) return NextResponse.json({ message: "Please wait a minute before trying again." }, { status: 429 });
+  recent.push(now);
+  requestTimes.set(forwarded, recent);
 
   try {
     payload = (await request.json()) as QuoteLead;
@@ -101,6 +102,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Invalid quote request." }, { status: 400 });
   }
 
+  if (text(payload.website)) return NextResponse.json({ message: "Quote request received." });
+
+  const leadSource = text(payload.leadSource);
   const lead = {
     leadType: text(payload.leadType),
     name: text(payload.name),
@@ -119,6 +123,8 @@ export async function POST(request: Request) {
     billFileNote: text(payload.billFileNote),
     calculatorSource: text(payload.calculatorSource),
     message: text(payload.message),
+    website: text(payload.website),
+    leadSource,
   };
 
   if (lead.leadType === "contact") {
@@ -127,6 +133,10 @@ export async function POST(request: Request) {
         { message: "Please complete all fields with valid details." },
         { status: 400 },
       );
+    }
+  } else if (leadSource === "calculator") {
+    if (!lead.name || lead.phone.replace(/\D/g, "").length < 10) {
+      return NextResponse.json({ message: "Please provide a valid name and 10-digit phone number." }, { status: 400 });
     }
   } else {
     const bill = Number(lead.monthlyBill);
@@ -137,6 +147,12 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
+  }
+
+  const botToken = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
+  if (!botToken || !chatId) {
+    return NextResponse.json({ message: "Lead delivery is not configured yet. Please contact us on WhatsApp." }, { status: 503 });
   }
 
   let telegramResponse: Response;

@@ -16,6 +16,8 @@ import {
   type SolarSystemType,
 } from "@/utils/solarCalculators";
 import { siteConfig, solarAssumptions } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
+import { SolarSavingsCharts } from "@/components/calculators/SolarSavingsCharts";
 
 type CalculatorKind = "savings" | "size" | "roof" | "emi" | "roi";
 type FieldType = "number" | "select";
@@ -93,7 +95,7 @@ const configs: Record<CalculatorKind, Config> = {
     title: "Solar Savings Calculator",
     description: "Estimate rooftop solar savings, annual bill reduction, and payback period.",
     initialValues: {
-      monthlyBill: "5000",
+      monthlyBill: "",
       monthlyConsumption: "",
       averageTariff: "",
       location: "Sojat / Pali",
@@ -119,6 +121,7 @@ const configs: Record<CalculatorKind, Config> = {
         monthlyConsumption: numberValue(values, "monthlyConsumption") || (numberValue(values, "averageTariff") > 0 ? numberValue(values, "monthlyBill") / numberValue(values, "averageTariff") : 0),
         customerType: customerType(values),
         systemType: values.systemType as SolarSystemType,
+        averageTariff: numberValue(values, "averageTariff"),
       });
       return [
         { label: "Recommended Solar System Size", value: formatIndianNumber(result.recommendedKw, " kW") },
@@ -127,8 +130,8 @@ const configs: Record<CalculatorKind, Config> = {
         { label: "Estimated Monthly Savings", value: formatCurrency(result.monthlySavings) },
         { label: "Estimated Annual Savings", value: formatCurrency(result.annualSavings) },
         { label: "Approximate System Cost", value: formatCurrency(result.systemCost) },
-        { label: "Applicable Subsidy", value: values.customerType === "Residential" ? "To be verified during eligibility check" : "Usually not applicable for commercial projects" },
-        { label: "Approximate Customer Contribution", value: formatCurrency(result.estimatedCustomerContribution) },
+        { label: "Indicative Subsidy", value: formatCurrency(result.subsidy) },
+        { label: "Indicative Net Cost", value: formatCurrency(result.netCost) },
         { label: "Estimated Payback Period", value: formatIndianNumber(result.paybackYears, " years") },
       ];
     },
@@ -137,7 +140,7 @@ const configs: Record<CalculatorKind, Config> = {
     kind: "size",
     title: "Solar System Size Calculator",
     description: "Recommend solar capacity, panel quantity, generation, and roof area.",
-    initialValues: { monthlyBill: "5000", monthlyConsumption: "", customerType: "Residential", panelWattage: "550", customPanelWattage: "650" },
+    initialValues: { monthlyBill: "", monthlyConsumption: "", customerType: "Residential", panelWattage: "550", customPanelWattage: "650" },
     fields: [
       { name: "monthlyBill", label: "Monthly Electricity Bill", type: "number", suffix: "INR", min: 0, step: 100 },
       { name: "monthlyConsumption", label: "Monthly Electricity Consumption", type: "number", suffix: "kWh", min: 0, step: 10 },
@@ -268,10 +271,16 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
   const config = configs[kind];
   const [values, setValues] = useState<Values>(config.initialValues);
   const [message, setMessage] = useState("");
+  const [leadName, setLeadName] = useState("");
+  const [leadPhone, setLeadPhone] = useState("");
+  const [leadCaptured, setLeadCaptured] = useState(false);
+  const [website, setWebsite] = useState("");
   const errors = useMemo(() => [...validateNumberFields(config, values), ...config.validate(values)], [config, values]);
   const results = useMemo(() => config.results(values), [config, values]);
   const resultLines = results.map((result) => `${result.label}: ${result.value}`);
   const hasErrors = errors.length > 0;
+  const savings = kind === "savings" ? calculateSolarSavings({ monthlyBill: numberValue(values, "monthlyBill"), monthlyConsumption: numberValue(values, "monthlyConsumption") || (numberValue(values, "averageTariff") > 0 ? numberValue(values, "monthlyBill") / numberValue(values, "averageTariff") : 0), customerType: customerType(values), systemType: values.systemType as SolarSystemType, averageTariff: numberValue(values, "averageTariff") }) : null;
+  const chartBill = numberValue(values, "monthlyBill") || numberValue(values, "monthlyConsumption") * (customerType(values) === "Commercial" ? solarAssumptions.defaultCommercialTariff : solarAssumptions.defaultResidentialTariff);
 
   function updateValue(name: string, value: string) {
     setValues((current) => ({ ...current, [name]: value }));
@@ -288,7 +297,25 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
     window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
   }
 
-  function requestQuoteWithResults() {
+  async function captureLead() {
+    if (leadCaptured) return true;
+    if (!leadName.trim() || leadPhone.replace(/\D/g, "").length !== 10) {
+      setMessage("Enter your name and a valid 10-digit phone number first.");
+      return false;
+    }
+    try {
+      const response = await fetch("/api/quote", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ leadSource: "calculator", name: leadName.trim(), phone: leadPhone, website, calculatorSource: config.title, message: resultLines.join("; ") }) });
+      const result = await response.json() as { message?: string };
+      if (!response.ok) { setMessage(result.message || "Could not send your details."); return false; }
+      setLeadCaptured(true);
+      trackEvent("calculator_completed", { calculator: config.kind });
+      setMessage("Details sent. You can now download your estimate or request a quote.");
+      return true;
+    } catch { setMessage("Could not send your details. Please try again or contact us on WhatsApp."); return false; }
+  }
+
+  async function requestQuoteWithResults() {
+    if (!(await captureLead())) return;
     const params = new URLSearchParams({
       source: config.title,
       calculator: config.kind,
@@ -301,8 +328,10 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
     window.location.href = `/get-quote?${params.toString()}`;
   }
 
-  function downloadResults() {
+  async function downloadResults() {
+    if (!(await captureLead())) return;
     downloadTextAsPdf(config.title, resultLines);
+    trackEvent("pdf_downloaded", { calculator: config.kind });
     setMessage("PDF downloaded.");
   }
 
@@ -339,7 +368,7 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
             <h2 className="text-2xl font-bold text-slate-950 dark:text-white">{config.title}</h2>
               <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{config.description}</p>
               <p className="mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                Estimates use configurable assumptions: {solarAssumptions.dailyGenerationPerKw} kWh/day per kW, {formatCurrency(solarAssumptions.onGridCostPerKw)} per kW for on-grid systems, and typical tariffs unless you enter your own.
+                Estimates use editable assumptions: {solarAssumptions.dailyGenerationPerKw} kWh/day per kW, size-based indicative pricing from {formatCurrency(solarAssumptions.costBands[0].costPerKw)}/kW, and tariff slabs unless you enter a bill rate.
               </p>
           </div>
 
@@ -389,7 +418,7 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.18em] text-sun-blue">Results</p>
-              <h2 className="mt-2 text-2xl font-bold text-slate-950 dark:text-white">Live estimate</h2>
+              <h2 className="mt-2 text-2xl font-bold text-slate-950 dark:text-white">{hasBillOrUnits(values) ? "Your estimate" : "Example estimate"}</h2>
             </div>
             {message ? <p className="rounded-full bg-blue-50 px-4 py-2 text-sm font-bold text-sun-blue dark:bg-blue-400/10">{message}</p> : null}
           </div>
@@ -403,9 +432,26 @@ export function SolarCalculatorClient({ kind }: { kind: CalculatorKind }) {
             ))}
           </div>
 
+          {kind === "savings" && savings && !hasErrors ? <SolarSavingsCharts monthlyBill={chartBill} monthlySavings={savings.monthlySavings} netCost={savings.netCost} /> : null}
+          {kind === "savings" && savings && !hasErrors && values.customerType === "Residential" && savings.recommendedKw > 3 ? (() => {
+            const rateFor = (kw: number) => solarAssumptions.costBands.find((band) => kw <= band.maxKw)?.costPerKw ?? solarAssumptions.costBands.at(-1)!.costPerKw;
+            const cost3kw = 3 * rateFor(3) - solarAssumptions.maxResidentialSubsidy;
+            return <p className="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">For eligible residential systems, the subsidy stops increasing above 3 kW. Indicative net cost: 3 kW {formatCurrency(cost3kw)}; recommended {formatIndianNumber(savings.recommendedKw, " kW")} {formatCurrency(savings.netCost)}. Final price after site survey.</p>;
+          })() : null}
+
           <p className="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">
-            These are planning estimates, not guaranteed savings. Final system size, cost, subsidy, generation, and payback depend on your bill, roof, DISCOM rules, site survey, components, and approvals.
+            {solarAssumptions.subsidyNote}. These are indicative planning estimates, not guaranteed savings; final size, price, eligibility and payback depend on site survey, components, DISCOM and approvals.
           </p>
+
+          <div className="mt-5 rounded-xl border border-slate-200 p-4 dark:border-white/10">
+            <p className="font-bold">Get your detailed estimate</p>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Enter your name and phone before downloading a PDF or requesting a detailed quote.</p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <label className="field-label">Name<input className="field-input" autoComplete="name" value={leadName} onChange={(e)=>{setLeadName(e.target.value);setLeadCaptured(false);}} /></label>
+              <label className="field-label">Phone<input className="field-input" type="tel" inputMode="numeric" autoComplete="tel-national" maxLength={10} value={leadPhone} onChange={(e)=>{setLeadPhone(e.target.value.replace(/\D/g, "").slice(0,10));setLeadCaptured(false);}} /></label>
+            </div>
+            <label aria-hidden="true" className="absolute -left-[10000px] h-px w-px overflow-hidden">Leave empty<input tabIndex={-1} autoComplete="off" value={website} onChange={(e)=>setWebsite(e.target.value)} /></label>
+          </div>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <button type="button" disabled={hasErrors} onClick={copyResults} className="rounded-full border border-slate-300 bg-white px-4 py-3 text-sm font-bold text-slate-900 transition hover:border-sun-blue hover:text-sun-blue disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:bg-white/10 dark:text-white">

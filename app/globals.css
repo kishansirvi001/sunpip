@@ -3,9 +3,19 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-sun-blue: #1155cc;
-  --color-sun-ink: #0b172a;
+  --color-sun-blue: #b45309;
+  --color-sun-ink: #17352f;
+  --color-solar-amber: #f59e0b;
+  --color-trust-green: #17352f;
+  --color-neutral-soft: #f8fafc;
+  --color-neutral-line: #e2e8f0;
+  --font-display: Georgia, "Noto Sans Devanagari", "Nirmala UI", serif;
+  --font-body: Arial, "Noto Sans Devanagari", "Nirmala UI", sans-serif;
+  --radius-card: 1rem;
+  --radius-control: 0.75rem;
+  --spacing-section: 4rem;
   --shadow-soft: 0 18px 60px rgba(15, 23, 42, 0.08);
+  --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 :root {
@@ -24,7 +34,21 @@ body {
   margin: 0;
   background: #ffffff;
   color: #0f172a;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+}
+
+:lang(hi) {
+  font-family: "Noto Sans Devanagari", "Nirmala UI", Arial, sans-serif;
+}
+
+/* Slate 400/500 are too faint on white at body-text sizes. */
+:root:not(.dark) .text-slate-400,
+:root:not(.dark) .text-slate-500 {
+  color: #475569;
 }
 
 .dark body {
@@ -43,13 +67,21 @@ body {
 }
 
 .section {
-  padding-block: 5rem;
+  padding-block: 3.5rem;
 }
 
 @media (min-width: 768px) {
   .section {
-    padding-block: 7rem;
+    padding-block: 5rem;
   }
+}
+
+@media (max-width: 767px) {
+  body { padding-bottom: calc(3.5rem + env(safe-area-inset-bottom)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
 .field-label {

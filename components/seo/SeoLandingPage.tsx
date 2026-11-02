@@ -5,15 +5,17 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import type { SeoLandingPage } from "@/lib/seoContent";
 import { breadcrumbSchema, faqSchemaForItems, localServiceSchema, webPageSchema } from "@/lib/structuredData";
 import { pageHeroImages } from "@/lib/visuals";
+import { faqItems } from "@/lib/constants";
 
 export function SeoLandingPageView({ page }: { page: SeoLandingPage }) {
   const path = `/${page.slug}`;
+  const faqs = page.slug === "pm-surya-ghar-solar-subsidy" ? [...page.faqs, ...faqItems.slice(8)] : page.faqs;
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ name: page.metaTitle, description: page.metaDescription, path })) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localServiceSchema({ name: page.title, description: page.metaDescription, path, serviceType: page.serviceType })) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchemaForItems(page.faqs)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchemaForItems(faqs)) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema([{ name: "Home", path: "/" }, { name: page.title, path }])) }} />
       <PageHero eyebrow={page.keyword} title={page.heroTitle} description={page.heroDescription} ctaHref="/get-quote" ctaLabel="Request quote" imageSrc={pageHeroImages.default} imageAlt={page.imageAlt} />
       {page.sections.map((section, index) => (
@@ -46,7 +48,7 @@ export function SeoLandingPageView({ page }: { page: SeoLandingPage }) {
         <div className="container grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
           <SectionHeader eyebrow="FAQ" title="Common questions." description="Useful answers for solar customers in Sojat, Pali and Rajasthan without keyword stuffing or unsupported promises." />
           <div className="grid gap-4">
-            {page.faqs.map((item) => (
+            {faqs.map((item) => (
               <article key={item.question} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
                 <h3 className="text-lg font-bold text-slate-950 dark:text-white">{item.question}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{item.answer}</p>

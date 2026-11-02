@@ -27,40 +27,10 @@ const sameAsProfiles = [
 export function organizationSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": organizationId,
-    name: siteConfig.name,
-    alternateName: siteConfig.shortName,
-    url: siteConfig.url,
-    logo: `${siteConfig.url}/logo.png`,
-    image: `${siteConfig.url}/og-image.svg`,
-    description: siteConfig.description,
-    telephone: `+91${siteConfig.phone}`,
-    email: siteConfig.email,
-    foundingDate: siteConfig.founded,
-    priceRange: "Moderate",
-
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: siteConfig.address,
-      addressLocality: "Sojat",
-      addressRegion: "Rajasthan",
-      postalCode: "306104",
-      addressCountry: "IN",
-    },
-
-    areaServed: serviceArea,
-
-    contactPoint: {
-      "@type": "ContactPoint",
-      telephone: `+91${siteConfig.phone}`,
-      email: siteConfig.email,
-      contactType: "customer service",
-      areaServed: "IN",
-      availableLanguage: ["English", "Hindi"],
-    },
-
-    sameAs: sameAsProfiles,
+    "@graph": [
+      { "@type": "Organization", "@id": organizationId, name: siteConfig.name, alternateName: siteConfig.shortName, url: siteConfig.url, logo: `${siteConfig.url}/logo.png`, description: siteConfig.description, foundingDate: siteConfig.founded, contactPoint: { "@type": "ContactPoint", telephone: `+91${siteConfig.phone}`, email: siteConfig.email, contactType: "customer service", availableLanguage: ["English", "Hindi"] }, sameAs: sameAsProfiles },
+      { "@type": "LocalBusiness", "@id": `${siteConfig.url}/#localbusiness`, name: siteConfig.name, parentOrganization: { "@id": organizationId }, url: siteConfig.url, image: `${siteConfig.url}/og-image.png`, description: siteConfig.description, telephone: `+91${siteConfig.phone}`, email: siteConfig.email, foundingDate: siteConfig.founded, address: { "@type": "PostalAddress", streetAddress: "[REGISTERED ADDRESS TO BE PROVIDED]", addressLocality: "Sojat", addressRegion: "Rajasthan", addressCountry: "IN" }, areaServed: serviceArea },
+    ],
   };
 }
 
@@ -79,7 +49,7 @@ export function servicesSchema() {
         name: service.title,
         description: service.description,
         serviceType: service.title,
-        url: `${siteConfig.url}/services/${service.slug}`,
+        url: service.slug === "government-subsidy-assistance" ? `${siteConfig.url}/pm-surya-ghar-solar-subsidy` : `${siteConfig.url}/services/${service.slug}`,
         provider: {
           "@id": organizationId,
         },
@@ -108,7 +78,7 @@ export function webPageSchema({
   name,
   description,
   path,
-  primaryImage = `${siteConfig.url}/og-image.svg`,
+  primaryImage = `${siteConfig.url}/og-image.png`,
 }: {
   name: string;
   description: string;
@@ -177,7 +147,7 @@ export function faqSchema() {
 }
 
 export function faqSchemaForItems(
-  items: Array<{ question: string; answer: string }>
+  items: readonly { question: string; answer: string }[]
 ) {
   return {
     "@context": "https://schema.org",
@@ -193,16 +163,80 @@ export function faqSchemaForItems(
   };
 }
 
+export function articleSchema({
+  title,
+  description,
+  path,
+  datePublished,
+  dateModified,
+}: {
+  title: string;
+  description: string;
+  path: string;
+  datePublished: string;
+  dateModified?: string;
+}) {
+  const url = `${siteConfig.url}${path}`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: title,
+    description,
+    url,
+    datePublished,
+    dateModified: dateModified ?? datePublished,
+    author: {
+      "@id": organizationId,
+    },
+    publisher: {
+      "@id": organizationId,
+    },
+    mainEntityOfPage: {
+      "@id": `${url}#webpage`,
+    },
+    inLanguage: "en-IN",
+  };
+}
+
+export function softwareApplicationSchema({
+  name,
+  description,
+  path,
+}: {
+  name: string;
+  description: string;
+  path: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "@id": `${siteConfig.url}${path}#calculator`,
+    name,
+    description,
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "Web",
+    url: `${siteConfig.url}${path}`,
+    publisher: {
+      "@id": organizationId,
+    },
+    areaServed: serviceArea,
+  };
+}
+
 export function localServiceSchema({
   name,
   description,
   path,
   serviceType,
+  areaServed = serviceArea,
 }: {
   name: string;
   description: string;
   path: string;
   serviceType: string;
+  areaServed?: Array<Record<string, string>>;
 }) {
   return {
     "@context": "https://schema.org",
@@ -217,12 +251,12 @@ export function localServiceSchema({
       "@id": organizationId,
     },
 
-    areaServed: serviceArea,
+    areaServed,
   };
 }
 
 export function breadcrumbSchema(
-  items: Array<{ name: string; path: string }>
+  items: readonly { name: string; path: string }[]
 ) {
   return {
     "@context": "https://schema.org",

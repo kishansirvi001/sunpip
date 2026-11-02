@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SolarCalculatorClient } from "@/components/calculators/SolarCalculatorClient";
+import { CalculatorSeoSupport, calculatorSeoSupport } from "@/components/seo/CalculatorSeoSupport";
 import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
 
@@ -7,6 +8,7 @@ export const metadata: Metadata = createMetadata(
   "Solar EMI Calculator for Rooftop Solar",
   "Estimate monthly EMI, loan amount, total interest and repayment for a rooftop solar project in Rajasthan.",
   "/solar-emi-calculator",
+  { keywords: ["solar EMI calculator", "solar loan calculator Rajasthan", "rooftop solar EMI"] },
 );
 
 export default function SolarEmiCalculatorPage() {
@@ -16,6 +18,7 @@ export default function SolarEmiCalculatorPage() {
       <section className="section bg-slate-50 dark:bg-white/[0.03]">
         <div className="container"><SolarCalculatorClient kind="emi" /></div>
       </section>
+      <CalculatorSeoSupport support={calculatorSeoSupport.emi} />
     </>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { QuoteForm } from "@/components/forms/QuoteForm";
 import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
+import { breadcrumbSchema, webPageSchema } from "@/lib/structuredData";
 import { pageHeroImages } from "@/lib/visuals";
 
 export const metadata: Metadata = createMetadata(
@@ -14,6 +15,8 @@ export const metadata: Metadata = createMetadata(
 export default function GetQuotePage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ name: "Get Solar Installation Quote in Sojat and Pali", description: "Request a SunPip rooftop solar quote for Sojat, Pali and Rajasthan.", path: "/get-quote" })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Get Quote", path: "/get-quote" }])) }} />
       <PageHero
         eyebrow="Quote Request"
         title="Get a solar proposal grounded in your real energy use."

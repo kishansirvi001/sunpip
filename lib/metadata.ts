@@ -7,7 +7,7 @@ type MetadataOptions = {
   noIndex?: boolean;
 };
 
-const defaultOgImage = "/og-image.svg";
+const defaultOgImage = "/og-image.png";
 
 export function createMetadata(
   title: string,
@@ -21,10 +21,7 @@ export function createMetadata(
 
   const url = `${siteConfig.url}${cleanPath}`;
 
-  const fullTitle =
-    title.length > 45
-      ? title
-      : `${title} | ${siteConfig.name}`;
+  const fullTitle = title;
 
   const robots = {
     index: !options.noIndex,
@@ -57,12 +54,6 @@ export function createMetadata(
       telephone: false,
     },
 
-    ...(options.keywords?.length
-      ? {
-          keywords: options.keywords,
-        }
-      : {}),
-
     robots,
 
     icons: {
@@ -75,6 +66,7 @@ export function createMetadata(
 
     alternates: {
       canonical: url,
+      ...(path === "" ? { languages: { en: url, hi: `${siteConfig.url}/hi` } } : {}),
     },
 
     openGraph: {

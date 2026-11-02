@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SolarCalculatorClient } from "@/components/calculators/SolarCalculatorClient";
+import { CalculatorSeoSupport, calculatorSeoSupport } from "@/components/seo/CalculatorSeoSupport";
 import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
 
@@ -7,6 +8,7 @@ export const metadata: Metadata = createMetadata(
   "Rooftop Area Calculator for Solar Installation",
   "Calculate usable roof area and maximum rooftop solar capacity before planning solar panel installation in Sojat, Pali or Rajasthan.",
   "/rooftop-area-calculator",
+  { keywords: ["rooftop area calculator solar", "roof area for solar panels", "solar roof area Rajasthan"] },
 );
 
 export default function RooftopAreaCalculatorPage() {
@@ -16,6 +18,7 @@ export default function RooftopAreaCalculatorPage() {
       <section className="section bg-slate-50 dark:bg-white/[0.03]">
         <div className="container"><SolarCalculatorClient kind="roof" /></div>
       </section>
+      <CalculatorSeoSupport support={calculatorSeoSupport.roof} />
     </>
   );
 }

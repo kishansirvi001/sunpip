@@ -4,6 +4,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { services } from "@/lib/constants";
 import { createMetadata } from "@/lib/metadata";
 import { seoLandingPages, solarSystemPages } from "@/lib/seoContent";
+import { breadcrumbSchema, servicesSchema, webPageSchema } from "@/lib/structuredData";
 import { pageHeroImages } from "@/lib/visuals";
 import Link from "next/link";
 
@@ -17,6 +18,9 @@ export const metadata: Metadata = createMetadata(
 export default function ServicesPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema({ name: "Solar Services in Sojat, Pali and Rajasthan", description: "SunPip Solutions solar EPC and rooftop solar services.", path: "/services" })) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesSchema()) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Services", path: "/services" }])) }} />
       <PageHero
         eyebrow="Services"
         title="Complete solar EPC and lifecycle support."
@@ -34,7 +38,7 @@ export default function ServicesPage() {
       <section className="section bg-white dark:bg-slate-950">
         <div className="container">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            {[...seoLandingPages, ...solarSystemPages].map((page) => (
+            {[...seoLandingPages.filter((page) => !["residential-solar", "solar-epc", "government-subsidy"].includes(page.slug)), ...solarSystemPages].map((page) => (
               <Link key={page.slug} href={`/${page.slug}`} className="rounded-lg border border-slate-200 bg-white p-4 text-sm font-bold text-slate-800 transition hover:border-sun-blue hover:text-sun-blue dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-100">
                 {"capacity" in page ? `${page.capacity} Solar System` : page.title}
               </Link>

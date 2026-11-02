@@ -1,0 +1,5 @@
+{
+  "nav": {"home":"Home","services":"Services","calculator":"Solar Calculator","projects":"Projects","about":"About","contact":"Contact","quote":"Get Quote"},
+  "hero": {"title":"Cut your electricity bill with rooftop solar","subtitle":"बिजली बिल घटाएं, सोलर लगवाएं","description":"Local help with solar planning, paperwork and installation in Sojat, Pali and nearby areas.","quote":"Get Free Quote","whatsapp":"WhatsApp Us"},
+  "trust": {"survey":"Free site survey","subsidy":"Subsidy & net metering support","team":"Local team in Sojat"}
+}
