@@ -18,6 +18,7 @@ import {
   Zap,
 } from "lucide-react";
 import type { BlogPost, NavItem, Product, Project, Service } from "@/types/site";
+import { solarConfig, squareFeetPerKw } from "@/lib/solar-config";
 
 export const siteConfig = {
   name: "SUNPIP SOLUTIONS LLP",
@@ -253,26 +254,18 @@ export const serviceAreas = [
 ];
 
 export const solarAssumptions = {
-  defaultResidentialTariff: 8,
-  defaultCommercialTariff: 10,
-  dailyGenerationPerKw: 4.2,
-  sqftPerKw: 90,
-  analysisYears: 25,
-  annualGenerationDegradation: 0.005,
-  // PLACEHOLDER editable planning assumptions. Replace with verified local tariffs and approved current quotes.
-  costBands: [
-    { maxKw: 1, costPerKw: 58000 },
-    { maxKw: 3, costPerKw: 52000 },
-    { maxKw: Infinity, costPerKw: 48000 },
-  ],
+  defaultResidentialTariff: solarConfig.tariff.defaultResidential,
+  defaultCommercialTariff: solarConfig.tariff.defaultCommercial,
+  dailyGenerationPerKw: solarConfig.generation.kwhPerKwDay.default,
+  sqftPerKw: squareFeetPerKw(),
+  analysisYears: solarConfig.performance.analysisYears,
+  annualGenerationDegradation: solarConfig.performance.degradationPercent / 100,
+  costBands: solarConfig.prices.bands.map((band) => ({ maxKw: band.maxKw, costPerKw: band.rupeesPerKw })),
   tariffSlabs: {
-    residential: [{ upToUnits: 100, rate: 3 }, { upToUnits: 300, rate: 6 }, { upToUnits: Infinity, rate: 8 }],
-    commercial: [{ upToUnits: 100, rate: 6 }, { upToUnits: 300, rate: 9 }, { upToUnits: Infinity, rate: 12 }],
+    residential: solarConfig.tariff.residentialSlabs.map((slab) => ({ upToUnits: slab.upTo, rate: slab.rate })),
+    commercial: solarConfig.tariff.commercialSlabs.map((slab) => ({ upToUnits: slab.upTo, rate: slab.rate })),
   },
-  subsidyPerKwFirstTwo: 30000,
-  subsidyThirdKw: 18000,
-  maxResidentialSubsidy: 78000,
-  subsidyNote: "Subsidy as per current PM Surya Ghar guidelines; verify at pmsuryaghar.gov.in",
+  subsidyNote: solarConfig.subsidyNote,
 };
 
 export const pmSuryaGharContent = {

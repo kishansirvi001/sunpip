@@ -20,6 +20,9 @@ type QuoteLead = {
   message?: unknown;
   website?: unknown;
   leadSource?: unknown;
+  calculatorInputs?: unknown;
+  calculatorOutputs?: unknown;
+  utm?: unknown;
 };
 
 type NormalizedLead = Required<Record<keyof QuoteLead, string>>;
@@ -83,6 +86,9 @@ function formatLeadMessage(lead: NormalizedLead) {
     `<b>Calculator Source:</b> ${escapeHtml(lead.calculatorSource || "Not provided")}`,
     "",
     `<b>Project Notes:</b> ${escapeHtml(notes)}`,
+    lead.leadSource === "calculator" ? `<b>Calculator inputs:</b> ${escapeHtml(lead.calculatorInputs)}` : "",
+    lead.leadSource === "calculator" ? `<b>Calculator outputs:</b> ${escapeHtml(lead.calculatorOutputs)}` : "",
+    lead.leadSource === "calculator" ? `<b>UTM:</b> ${escapeHtml(lead.utm)}` : "",
   ].join("\n");
 }
 
@@ -125,6 +131,9 @@ export async function POST(request: Request) {
     message: text(payload.message),
     website: text(payload.website),
     leadSource,
+    calculatorInputs: JSON.stringify(payload.calculatorInputs ?? {}),
+    calculatorOutputs: JSON.stringify(payload.calculatorOutputs ?? {}),
+    utm: JSON.stringify(payload.utm ?? {}),
   };
 
   if (lead.leadType === "contact") {

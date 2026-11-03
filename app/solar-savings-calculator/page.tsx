@@ -5,6 +5,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { createMetadata } from "@/lib/metadata";
 import { solarAssumptions } from "@/lib/constants";
 import { formatCurrency } from "@/utils/solarCalculators";
+import { calculateSubsidy } from "@/lib/subsidy";
+import { systemCost } from "@/lib/solar-config";
 
 export const metadata: Metadata = createMetadata(
   "Solar Savings Calculator for Rajasthan",
@@ -22,7 +24,7 @@ export default function SolarSavingsCalculatorPage() {
           <section className="mt-12 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
             <h2 className="text-2xl font-bold">Indicative residential pricing</h2>
             <p className="mt-2 text-sm text-slate-600">Indicative only; final quote after site survey. Subsidy eligibility and release are subject to approval.</p>
-            <div className="mt-5 overflow-x-auto"><table className="w-full min-w-[560px] border-collapse text-left text-sm"><thead><tr className="border-b"><th className="p-3">System</th><th className="p-3">Before subsidy</th><th className="p-3">Indicative subsidy</th><th className="p-3">Net cost</th></tr></thead><tbody>{[1,2,3,5].map((kw)=>{const rate=solarAssumptions.costBands.find((b)=>kw<=b.maxKw)?.costPerKw ?? solarAssumptions.costBands.at(-1)!.costPerKw; const gross=kw*rate; const subsidy=Math.min(Math.min(kw,2)*solarAssumptions.subsidyPerKwFirstTwo+Math.max(0,Math.min(kw-2,1))*solarAssumptions.subsidyThirdKw,solarAssumptions.maxResidentialSubsidy); return <tr key={kw} className="border-b last:border-0"><th className="p-3">{kw} kW</th><td className="p-3">{formatCurrency(gross)}</td><td className="p-3">{formatCurrency(subsidy)}</td><td className="p-3 font-bold">{formatCurrency(gross-subsidy)}</td></tr>;})}</tbody></table></div>
+            <div className="mt-5 overflow-x-auto"><table className="w-full min-w-[560px] border-collapse text-left text-sm"><thead><tr className="border-b"><th className="p-3">System</th><th className="p-3">Before subsidy</th><th className="p-3">Indicative subsidy</th><th className="p-3">Net cost</th></tr></thead><tbody>{[1,2,3,5].map((kw)=>{const gross=systemCost(kw); const subsidy=calculateSubsidy(kw,"Residential","On-Grid").totalSubsidy; return <tr key={kw} className="border-b last:border-0"><th className="p-3">{kw} kW</th><td className="p-3">{formatCurrency(gross)}</td><td className="p-3">{formatCurrency(subsidy)}</td><td className="p-3 font-bold">{formatCurrency(gross-subsidy)}</td></tr>;})}</tbody></table></div>
             <p className="mt-4 text-xs text-slate-500">{solarAssumptions.subsidyNote}</p>
           </section>
         </div>

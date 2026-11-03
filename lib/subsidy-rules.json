@@ -1,0 +1,7 @@
+{
+  "effectiveDate": "2024-02-13",
+  "lastUpdated": "2024-03-16",
+  "sourceUrl": "https://solarrooftop.pmsuryaghar.gov.in/notification/172_notification.pdf",
+  "central": { "eligibleCustomerType": "Residential", "eligibleSystemType": "On-Grid", "slabs": [{ "upToKw": 2, "rupeesPerKw": 30000 }, { "upToKw": 3, "rupeesPerKw": 18000 }], "capRupees": 78000 },
+  "verification": "TODO(verify): reconfirm current MNRE/portal rules before production use."
+}
